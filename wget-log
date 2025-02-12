@@ -1,0 +1,11 @@
+--2025-02-12 13:22:17--  https://i0.wp.com/media3.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif?resize=400%2C225
+Resolving i0.wp.com (i0.wp.com)... 192.0.77.2
+Connecting to i0.wp.com (i0.wp.com)|192.0.77.2|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 1563265 (1.5M) [image/gif]
+Saving to: ‘giphy.gif?resize=400,225’
+
+giphy.gif?resize=400,2   0%[                          ]       0  --.-KB/s               giphy.gif?resize=400,2   3%[                          ]  50.25K   167KB/s               giphy.gif?resize=400,2  16%[===>                      ] 259.45K   479KB/s               giphy.gif?resize=400,2  67%[================>         ]   1.00M  1.34MB/s               giphy.gif?resize=400,2 100%[=========================>]   1.49M  1.85MB/s    in 0.8s    
+
+2025-02-12 13:22:19 (1.85 MB/s) - ‘giphy.gif?resize=400,225’ saved [1563265/1563265]
+
