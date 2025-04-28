@@ -67,7 +67,11 @@ export function AskOut({ setYes }) {
 	return (
 		<div className="relative flex flex-col items-center justify-center text-center text-white">
 			<img src={catImg} alt="Cute reaction" className="w-48 h-48 mb-4" />
-			<h1 className="mb-6 text-3xl">Will You Go Out With Me?</h1>
+			<h1 className="mb-6 text-4xl">Hi {process.env.NAME}</h1>
+			<h1 className="mb-6 text-3xl">
+				I think you're really special and I like you a lot! 💖 Do you
+				feel the same way about me? 😊
+			</h1>
 			<button
 				className="px-12 py-3 text-white transition-all bg-green-500 rounded-md"
 				onClick={handleYesClick}
