@@ -26,8 +26,8 @@ A charming and interactive web application designed to help you confess your fee
 1. Create .env file in root directory
 2. Add your custom values:
     ```env
-    PASSWORD = "your_secret_password_here"
-    NAME = "Your_Crush's_Name_Here"
+    VITE_PASSWORD = "your_secret_password_here"
+    VITE_NAME = "Your_Crush's_Name_Here"
     ```
 **🔐 Pro Tip: Choose a password only you two know!**
 **⚠️ Never commit your .env file! Add it to .gitignore**
