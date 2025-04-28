@@ -2,7 +2,7 @@
 
 A charming and interactive web application designed to help you confess your feelings in a memorable way! Customize with your crush's name and a secret password for a personalized experience. 
 
-![Demo Screenshot](https://via.placeholder.com/800x400.png?text=Ask+Her+Out+Demo+Preview) *Replace with actual screenshot*
+![Demo Screenshot](https://github.com/DinuthInduwara/Ask-Her-Out/blob/main/public/Capture.PNG?raw=true) 
 
 ## ✨ Features
 - 🌹 **Personalized Love Message** with your crush's name
