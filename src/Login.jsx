@@ -11,11 +11,11 @@ export function Login({ setAuthenticated }) {
 	const [password, setPassword] = useState("");
 	const [img, setImg] = useState(tcat);
 	const [text, setText] = useState(
-		"Enter password 🔐 to prove you're Ayathnaaa... or what? 👀🕵️‍♂️"
+		`Enter password 🔐 to prove you're ${process.env.NAME}... or what? 👀🕵️‍♂️`
 	);
 
 	// Change this to the password you want to use
-	const correctPassword = "OcDevsJ";
+	const correctPassword = process.env.PASSWORD;
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -26,7 +26,7 @@ export function Login({ setAuthenticated }) {
 			setImg(ccat);
 			sendMessageTelegram("InCorrect Password Attempted");
 			setText(
-				"Incorrect password. 🔐 Are you truly Ayathna, or are you an imposter? 🕵️‍♂️🤔"
+				`Incorrect password. 🔐 Are you truly ${process.env.NAME}, or are you an imposter? 🕵️‍♂️🤔`
 			);
 		}
 	};
@@ -60,7 +60,7 @@ export function Login({ setAuthenticated }) {
 			{/* Fixed footer with PNG social buttons */}
 			<footer className="fixed bottom-0 left-0 right-0 flex justify-center gap-4 p-4 ">
 				<a
-					href="https://github.com/DinuthInduwara/AyathnaAskout"
+					href="https://github.com/DinuthInduwara/Ask-Her-Out"
 					target="_blank"
 					rel="noopener noreferrer"
 					className="flex items-center px-4 py-2 text-white bg-gray-800 rounded hover:bg-gray-700"
