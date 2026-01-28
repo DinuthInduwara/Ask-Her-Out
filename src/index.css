@@ -2,9 +2,471 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Base styles */
 @layer base {
     html {
         background-color: #2d3748;
-        /* Tailwind's bg-gray-800 */
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+}
+
+/* ==================== ANIMATIONS ==================== */
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes loading-pulse {
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* ==================== LOGIN PAGE ==================== */
+
+.login-container {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.login-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 800px;
+    gap: 1.5rem;
+}
+
+.login-cat {
+    width: 40%;
+    max-width: 200px;
+    min-width: 100px;
+    height: auto;
+    object-fit: contain;
+}
+
+.login-form {
+    background-color: #4a5568;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-title {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.login-input {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #cbd5e0;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+}
+
+.login-button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #4299e1;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.login-button:hover {
+    background-color: #3182ce;
+}
+
+.login-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.social-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    color: white;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: opacity 0.2s;
+}
+
+.social-btn:hover {
+    opacity: 0.9;
+}
+
+.social-github {
+    background-color: #1f2937;
+}
+
+.social-telegram {
+    background-color: #3b82f6;
+}
+
+.social-facebook {
+    background-color: #1d4ed8;
+}
+
+.social-text {
+    display: none;
+}
+
+/* ==================== ASK OUT PAGE ==================== */
+
+.askout-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    min-height: 100vh;
+    padding: 1rem;
+    overflow: hidden;
+}
+
+.askout-cat {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+}
+
+.askout-greeting {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.askout-message {
+    font-size: 1.125rem;
+    margin-bottom: 1.5rem;
+    padding: 0 1rem;
+    max-width: 500px;
+    line-height: 1.5;
+}
+
+.askout-yes-btn {
+    padding: 0.75rem 2rem;
+    background-color: #48bb78;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);
+    max-width: 90vw;
+    word-break: break-word;
+}
+
+.askout-yes-btn:hover {
+    box-shadow: 0 6px 20px rgba(72, 187, 120, 0.6);
+    transform: translateY(-2px);
+}
+
+.askout-no-btn {
+    padding: 0.75rem 1.5rem;
+    margin-top: 1rem;
+    background-color: #f56565;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: transform 0.2s;
+}
+
+.askout-no-btn:hover {
+    transform: scale(0.95);
+}
+
+/* ==================== TYPING BOX ==================== */
+
+.typing-box {
+    border: 1px solid #a0aec0;
+    padding: 1rem;
+    font-family: monospace;
+    width: 100%;
+    margin: 0;
+    background-color: #718096;
+    border-radius: 0.375rem;
+    color: #48bb78;
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.cursor {
+    animation: blink 1s step-start infinite;
+}
+
+/* ==================== CELEBRATION IMAGES ==================== */
+
+.celebration-img {
+    animation: fade-in 0.5s ease-out;
+    pointer-events: none;
+}
+
+/* ==================== LOADING BAR ==================== */
+
+.loading-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ff6b9d, #ff8a80, #ffab91);
+    transition: width 0.3s ease;
+    z-index: 9999;
+    animation: loading-pulse 1.5s infinite;
+}
+
+/* ==================== MUSIC PLAYER ==================== */
+
+.music-player {
+    position: fixed;
+    bottom: 70px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(45, 55, 72, 0.95);
+    padding: 6px 10px;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+.music-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff6b9d, #ff8a80);
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.music-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(255, 107, 157, 0.5);
+}
+
+.volume-toggle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.2s;
+}
+
+.volume-toggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.volume-slider {
+    width: 60px;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ff6b9d;
+    cursor: pointer;
+}
+
+/* ==================== TABLET STYLES (768px+) ==================== */
+
+@media (min-width: 768px) {
+    .login-content {
+        flex-direction: row;
+        gap: 2rem;
+    }
+
+    .login-cat {
+        width: 25%;
+        max-width: 250px;
+    }
+
+    .login-form {
+        padding: 2rem;
+    }
+
+    .login-title {
+        font-size: 1.25rem;
+    }
+
+    .social-text {
+        display: inline;
+    }
+
+    .social-btn {
+        padding: 0.5rem 1rem;
+    }
+
+    .askout-cat {
+        width: 180px;
+        height: 180px;
+    }
+
+    .askout-greeting {
+        font-size: 2.25rem;
+    }
+
+    .askout-message {
+        font-size: 1.5rem;
+    }
+
+    .typing-box {
+        font-size: 1rem;
+        padding: 1.25rem;
+    }
+
+    .music-player {
+        bottom: 20px;
+        right: 20px;
+        padding: 8px 12px;
+    }
+
+    .music-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+
+    .volume-slider {
+        width: 80px;
+    }
+}
+
+/* ==================== DESKTOP STYLES (1024px+) ==================== */
+
+@media (min-width: 1024px) {
+    .login-cat {
+        width: 20%;
+        max-width: 300px;
+    }
+
+    .askout-cat {
+        width: 200px;
+        height: 200px;
+    }
+
+    .askout-greeting {
+        font-size: 2.5rem;
+    }
+
+    .askout-message {
+        font-size: 1.75rem;
+        max-width: 600px;
+    }
+}
+
+/* ==================== SMALL SCREEN FIXES ==================== */
+
+@media (max-width: 360px) {
+    .login-form {
+        padding: 1rem;
+    }
+
+    .login-title {
+        font-size: 0.875rem;
+    }
+
+    .login-input {
+        padding: 0.625rem;
+        font-size: 0.875rem;
+    }
+
+    .askout-greeting {
+        font-size: 1.5rem;
+    }
+
+    .askout-message {
+        font-size: 1rem;
+    }
+
+    .social-btn {
+        padding: 0.375rem 0.5rem;
     }
 }

