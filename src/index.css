@@ -534,6 +534,124 @@
     }
 }
 
+/* Butterfly flight paths - gentle floating motion */
+@keyframes butterfly-path-0 {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    25% {
+        transform: translate(30px, -40px) rotate(10deg);
+    }
+
+    50% {
+        transform: translate(-20px, -20px) rotate(-5deg);
+    }
+
+    75% {
+        transform: translate(40px, 30px) rotate(15deg);
+    }
+
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+}
+
+@keyframes butterfly-path-1 {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    25% {
+        transform: translate(-50px, 30px) rotate(-10deg);
+    }
+
+    50% {
+        transform: translate(30px, 60px) rotate(8deg);
+    }
+
+    75% {
+        transform: translate(-30px, -20px) rotate(-12deg);
+    }
+
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+}
+
+@keyframes butterfly-path-2 {
+    0% {
+        transform: translate(0, 0) rotate(5deg);
+    }
+
+    33% {
+        transform: translate(60px, -30px) rotate(-8deg);
+    }
+
+    66% {
+        transform: translate(-40px, 50px) rotate(12deg);
+    }
+
+    100% {
+        transform: translate(0, 0) rotate(5deg);
+    }
+}
+
+@keyframes butterfly-path-3 {
+    0% {
+        transform: translate(0, 0) rotate(-5deg);
+    }
+
+    20% {
+        transform: translate(-25px, -50px) rotate(10deg);
+    }
+
+    40% {
+        transform: translate(45px, -25px) rotate(-8deg);
+    }
+
+    60% {
+        transform: translate(20px, 40px) rotate(15deg);
+    }
+
+    80% {
+        transform: translate(-35px, 20px) rotate(-12deg);
+    }
+
+    100% {
+        transform: translate(0, 0) rotate(-5deg);
+    }
+}
+
+@keyframes butterfly-wing {
+
+    0%,
+    100% {
+        transform: scaleX(1);
+    }
+
+    50% {
+        transform: scaleX(0.7);
+    }
+}
+
+@keyframes gif-pop-in {
+    0% {
+        opacity: 0;
+        transform: scale(0) rotate(0deg);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
 @keyframes bg-shift {
 
     0%,
@@ -573,6 +691,77 @@
     inset: 0;
     pointer-events: none;
     overflow: hidden;
+}
+
+/* Butterfly container */
+.butterfly-container {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.flying-butterfly {
+    position: absolute;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.05));
+    opacity: 0.4;
+    /* Much more subtle */
+}
+
+.flying-butterfly.path-0 {
+    animation-name: butterfly-path-0;
+}
+
+.flying-butterfly.path-1 {
+    animation-name: butterfly-path-1;
+}
+
+.flying-butterfly.path-2 {
+    animation-name: butterfly-path-2;
+}
+
+.flying-butterfly.path-3 {
+    animation-name: butterfly-path-3;
+}
+
+/* GIF Celebration Overlay */
+.gif-celebration-overlay {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg,
+            rgba(255, 228, 236, 0.95) 0%,
+            rgba(255, 192, 203, 0.95) 50%,
+            rgba(255, 240, 245, 0.95) 100%);
+    z-index: 300;
+    overflow: hidden;
+}
+
+.gif-celebration-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    font-weight: 700;
+    color: #d63384;
+    text-shadow: 0 4px 20px rgba(214, 51, 132, 0.4);
+    z-index: 310;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    border: 2px solid #ffb6c1;
+    white-space: nowrap;
+}
+
+.celebration-gif-item {
+    position: absolute;
+    object-fit: contain;
+    animation: gif-pop-in 1s ease forwards;
+    /* Slower pop-in animation */
+    pointer-events: none;
 }
 
 .floating-item {
@@ -980,5 +1169,10 @@
 
     .love-lyric-active .love-lyric-sinhala {
         font-size: 1.25rem;
+    }
+
+    .gif-celebration-message {
+        font-size: 2.5rem;
+        padding: 1.5rem 3rem;
     }
 }

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAudio } from './hooks/useAudio';
 import { useLyricParser } from './hooks/useLyricParser';
-import { catImages } from './constants/assets';
+import { catImages, celebrationImages } from './constants/assets';
 
 // Import assets
 import romanticMusic from './assets/music/romantic.mp3';
@@ -32,7 +32,7 @@ const loveEmojis = ['💕', '💖', '💗', '💝', '💘', '🦋', '🌸', '�
 
 /**
  * LoveStoryPlayer - A lovely, romantic lyrics experience
- * Features: rotating cat GIFs on sides, flying butterflies/flowers, emoji popup
+ * Features: rotating cat GIFs on sides, flying butterflies, GIF celebration when song ends
  */
 export function LoveStoryPlayer() {
     const lyrics = useLyricParser(lyricsData);
@@ -52,10 +52,14 @@ export function LoveStoryPlayer() {
     const [leftCatIndex, setLeftCatIndex] = useState(0);
     const [rightCatIndex, setRightCatIndex] = useState(Math.floor(catImages.length / 2));
     const [floatingElements, setFloatingElements] = useState([]);
+    const [butterflies, setButterflies] = useState([]);
     const [showEmojiPopup, setShowEmojiPopup] = useState(false);
     const [popupEmojis, setPopupEmojis] = useState([]);
+    const [showGifCelebration, setShowGifCelebration] = useState(false);
+    const [celebrationGifs, setCelebrationGifs] = useState([]);
     const lyricsContainerRef = useRef(null);
     const activeLineRef = useRef(null);
+    const songEndedRef = useRef(false);
 
     // Show the player after a brief intro animation
     useEffect(() => {
@@ -72,29 +76,111 @@ export function LoveStoryPlayer() {
         return () => clearInterval(interval);
     }, []);
 
-    // Create floating butterflies/flowers animation
+    // Create floating butterflies/flowers that rise up
     useEffect(() => {
         const createFloatingElement = () => {
-            const types = ['🦋', '🌸', '🌺', '🌷', '💕', '✨'];
+            const types = ['🌸', '🌺', '🌷', '💕', '✨'];
             const element = {
                 id: Date.now() + Math.random(),
                 type: types[Math.floor(Math.random() * types.length)],
                 left: Math.random() * 100,
-                animationDuration: 8 + Math.random() * 8,
+                animationDuration: 10 + Math.random() * 8,
                 delay: Math.random() * 2,
-                size: 16 + Math.random() * 20
+                size: 14 + Math.random() * 14
             };
-            setFloatingElements(prev => [...prev.slice(-15), element]);
+            setFloatingElements(prev => [...prev.slice(-10), element]);
         };
 
-        const interval = setInterval(createFloatingElement, 1500);
-        // Create initial elements
-        for (let i = 0; i < 8; i++) {
-            setTimeout(createFloatingElement, i * 200);
+        const interval = setInterval(createFloatingElement, 2500);
+        for (let i = 0; i < 5; i++) {
+            setTimeout(createFloatingElement, i * 300);
         }
 
         return () => clearInterval(interval);
     }, []);
+
+    // Create butterflies that fly around the screen gently (subtle, few)
+    useEffect(() => {
+        const createButterfly = () => {
+            const butterfly = {
+                id: Date.now() + Math.random(),
+                startX: Math.random() * 70 + 15, // 15% to 85%
+                startY: Math.random() * 50 + 25, // 25% to 75%
+                size: 16 + Math.random() * 10, // Smaller butterflies
+                duration: 12 + Math.random() * 8, // Slower movement
+                delay: Math.random() * 4,
+                pathType: Math.floor(Math.random() * 4)
+            };
+            setButterflies(prev => [...prev.slice(-3), butterfly]); // Max 3 butterflies
+        };
+
+        // Create initial butterflies - only 3
+        for (let i = 0; i < 3; i++) {
+            setTimeout(createButterfly, i * 800);
+        }
+
+        const interval = setInterval(createButterfly, 8000); // Less frequent
+        return () => clearInterval(interval);
+    }, []);
+
+    // Detect when song is about to end (8 seconds before) and show GIF celebration
+    // Audio is 4:04 (244 seconds), so start at 236 seconds
+    useEffect(() => {
+        const startCelebrationAt = 236; // 8 seconds before end (244 - 8)
+
+        if (currentTime >= startCelebrationAt && !songEndedRef.current) {
+            songEndedRef.current = true;
+            triggerGifCelebration();
+        }
+
+        // Reset if song restarts
+        if (currentTime < 5 && songEndedRef.current) {
+            songEndedRef.current = false;
+            setShowGifCelebration(false);
+            setCelebrationGifs([]);
+        }
+    }, [currentTime]);
+
+    // Trigger GIF celebration - slowly fill the screen
+    const triggerGifCelebration = () => {
+        setShowGifCelebration(true);
+
+        const containerWidth = window.innerWidth;
+        const containerHeight = window.innerHeight;
+        const isMobile = containerWidth < 768;
+        const minSize = isMobile ? 50 : 80;
+        const maxSize = isMobile ? 120 : 200;
+        const maxGifs = isMobile ? 25 : 40;
+
+        // Create array of GIF positions - scattered randomly
+        const newGifs = [];
+        for (let i = 0; i < maxGifs; i++) {
+            const size = Math.floor(Math.random() * (maxSize - minSize + 1)) + minSize;
+            const left = Math.random() * (containerWidth - size);
+            const top = Math.random() * (containerHeight - size);
+            const rotation = Math.random() * 20 - 10; // -10 to +10 degrees (less rotation)
+            const randomImage = celebrationImages[Math.floor(Math.random() * celebrationImages.length)];
+            const delay = i * 200; // MUCH slower - 200ms between each GIF
+
+            newGifs.push({
+                id: i,
+                src: randomImage,
+                left,
+                top,
+                width: size,
+                height: size,
+                rotation,
+                delay
+            });
+        }
+
+        // Add GIFs gradually - slowly filling the screen
+        newGifs.forEach((gif) => {
+            setTimeout(() => {
+                setCelebrationGifs(prev => [...prev, gif]);
+            }, gif.delay);
+        });
+    };
 
     // Find the current active lyric based on audio time
     useEffect(() => {
@@ -137,7 +223,6 @@ export function LoveStoryPlayer() {
         setShowEmojiPopup(true);
         setPopupEmojis([]);
 
-        // Generate emojis at intervals
         let count = 0;
         const interval = setInterval(() => {
             if (count >= 50) {
@@ -187,7 +272,7 @@ export function LoveStoryPlayer() {
             {/* Lovely pink gradient background */}
             <div className="love-player-bg" />
 
-            {/* Floating butterflies and flowers */}
+            {/* Floating flowers rising up */}
             <div className="floating-elements">
                 {floatingElements.map(el => (
                     <span
@@ -201,6 +286,25 @@ export function LoveStoryPlayer() {
                         }}
                     >
                         {el.type}
+                    </span>
+                ))}
+            </div>
+
+            {/* Flying butterflies around the screen */}
+            <div className="butterfly-container">
+                {butterflies.map(b => (
+                    <span
+                        key={b.id}
+                        className={`flying-butterfly path-${b.pathType}`}
+                        style={{
+                            left: `${b.startX}%`,
+                            top: `${b.startY}%`,
+                            fontSize: `${b.size}px`,
+                            animationDuration: `${b.duration}s`,
+                            animationDelay: `${b.delay}s`
+                        }}
+                    >
+                        🦋
                     </span>
                 ))}
             </div>
@@ -329,6 +433,30 @@ export function LoveStoryPlayer() {
                         ))}
                         <p className="emoji-popup-hint">Tap anywhere to close</p>
                     </div>
+                </div>
+            )}
+
+            {/* GIF Celebration Overlay - when song ends */}
+            {showGifCelebration && (
+                <div className="gif-celebration-overlay">
+                    <div className="gif-celebration-message">
+                        <span>💖</span> I Love You Forever <span>💖</span>
+                    </div>
+                    {celebrationGifs.map(gif => (
+                        <img
+                            key={gif.id}
+                            src={gif.src}
+                            alt="Celebration"
+                            className="celebration-gif-item"
+                            style={{
+                                left: gif.left,
+                                top: gif.top,
+                                width: gif.width,
+                                height: gif.height,
+                                transform: `rotate(${gif.rotation}deg)`
+                            }}
+                        />
+                    ))}
                 </div>
             )}
         </div>
