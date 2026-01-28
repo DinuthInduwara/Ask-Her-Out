@@ -1,5 +1,5 @@
 import { AskOut } from "./AskOut";
-import { ImageLayer } from "./Imagelayer";
+import { LoveStoryPlayer } from "./LoveStoryPlayer";
 import { useState, useEffect } from "react";
 import { Login } from "./Login";
 import { MusicPlayer } from "./components/MusicPlayer";
@@ -59,10 +59,10 @@ function App() {
 			{/* Main content */}
 			{!authenticated && <Login setAuthenticated={setAuthenticated} />}
 			{authenticated && !isYes && <AskOut setYes={setYes} />}
-			{isYes && <ImageLayer />}
+			{isYes && <LoveStoryPlayer />}
 
-			{/* Music player - uncomment when you add music */}
-			<MusicPlayer audioSrc={romanticMusic} /> 
+			{/* Music player - only show when NOT in lyrics player mode */}
+			{!isYes && <MusicPlayer audioSrc={romanticMusic} />}
 		</>
 	);
 }
