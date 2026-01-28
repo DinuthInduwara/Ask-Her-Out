@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAudio } from './hooks/useAudio';
 import { useLyricParser } from './hooks/useLyricParser';
+import { catImages } from './constants/assets';
 
 // Import assets
 import romanticMusic from './assets/music/romantic.mp3';
@@ -26,9 +27,12 @@ const lyricsData = `
 [03:18.30]Love story... (අපේම ආදර කතාව...)
 `;
 
+// Floating emojis for the love theme
+const loveEmojis = ['💕', '💖', '💗', '💝', '💘', '🦋', '🌸', '🌺', '🌷', '✨', '💫', '🌹', '🥰', '😍', '💑', '💏'];
+
 /**
- * LoveStoryPlayer - A Spotify-style immersive lyrics experience
- * Features synced lyrics with auto-scroll, smooth animations, and romantic aesthetics
+ * LoveStoryPlayer - A lovely, romantic lyrics experience
+ * Features: rotating cat GIFs on sides, flying butterflies/flowers, emoji popup
  */
 export function LoveStoryPlayer() {
     const lyrics = useLyricParser(lyricsData);
@@ -45,6 +49,11 @@ export function LoveStoryPlayer() {
 
     const [activeIndex, setActiveIndex] = useState(-1);
     const [isReady, setIsReady] = useState(false);
+    const [leftCatIndex, setLeftCatIndex] = useState(0);
+    const [rightCatIndex, setRightCatIndex] = useState(Math.floor(catImages.length / 2));
+    const [floatingElements, setFloatingElements] = useState([]);
+    const [showEmojiPopup, setShowEmojiPopup] = useState(false);
+    const [popupEmojis, setPopupEmojis] = useState([]);
     const lyricsContainerRef = useRef(null);
     const activeLineRef = useRef(null);
 
@@ -52,6 +61,39 @@ export function LoveStoryPlayer() {
     useEffect(() => {
         const timer = setTimeout(() => setIsReady(true), 500);
         return () => clearTimeout(timer);
+    }, []);
+
+    // Rotate cat images every 4 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setLeftCatIndex(prev => (prev + 1) % catImages.length);
+            setRightCatIndex(prev => (prev + 1) % catImages.length);
+        }, 4000);
+        return () => clearInterval(interval);
+    }, []);
+
+    // Create floating butterflies/flowers animation
+    useEffect(() => {
+        const createFloatingElement = () => {
+            const types = ['🦋', '🌸', '🌺', '🌷', '💕', '✨'];
+            const element = {
+                id: Date.now() + Math.random(),
+                type: types[Math.floor(Math.random() * types.length)],
+                left: Math.random() * 100,
+                animationDuration: 8 + Math.random() * 8,
+                delay: Math.random() * 2,
+                size: 16 + Math.random() * 20
+            };
+            setFloatingElements(prev => [...prev.slice(-15), element]);
+        };
+
+        const interval = setInterval(createFloatingElement, 1500);
+        // Create initial elements
+        for (let i = 0; i < 8; i++) {
+            setTimeout(createFloatingElement, i * 200);
+        }
+
+        return () => clearInterval(interval);
     }, []);
 
     // Find the current active lyric based on audio time
@@ -81,7 +123,6 @@ export function LoveStoryPlayer() {
             const lineTop = activeLine.offsetTop;
             const lineHeight = activeLine.clientHeight;
 
-            // Scroll to center the active line
             const scrollTarget = lineTop - containerHeight / 2 + lineHeight / 2;
 
             container.scrollTo({
@@ -90,6 +131,40 @@ export function LoveStoryPlayer() {
             });
         }
     }, [activeIndex]);
+
+    // Handle emoji popup
+    const handleEmojiPopup = useCallback(() => {
+        setShowEmojiPopup(true);
+        setPopupEmojis([]);
+
+        // Generate emojis at intervals
+        let count = 0;
+        const interval = setInterval(() => {
+            if (count >= 50) {
+                clearInterval(interval);
+                return;
+            }
+
+            const emoji = {
+                id: Date.now() + Math.random(),
+                type: loveEmojis[Math.floor(Math.random() * loveEmojis.length)],
+                left: 10 + Math.random() * 80,
+                bottom: -10,
+                animationDuration: 3 + Math.random() * 3,
+                size: 24 + Math.random() * 32
+            };
+
+            setPopupEmojis(prev => [...prev, emoji]);
+            count++;
+        }, 100);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const closeEmojiPopup = () => {
+        setShowEmojiPopup(false);
+        setPopupEmojis([]);
+    };
 
     // Format time as mm:ss
     const formatTime = (seconds) => {
@@ -108,29 +183,59 @@ export function LoveStoryPlayer() {
     };
 
     return (
-        <div className="lyrics-player">
-            {/* Background with blur effect */}
-            <div className="lyrics-player-bg" />
-            <div className="lyrics-player-overlay" />
+        <div className="love-player">
+            {/* Lovely pink gradient background */}
+            <div className="love-player-bg" />
+
+            {/* Floating butterflies and flowers */}
+            <div className="floating-elements">
+                {floatingElements.map(el => (
+                    <span
+                        key={el.id}
+                        className="floating-item"
+                        style={{
+                            left: `${el.left}%`,
+                            fontSize: `${el.size}px`,
+                            animationDuration: `${el.animationDuration}s`,
+                            animationDelay: `${el.delay}s`
+                        }}
+                    >
+                        {el.type}
+                    </span>
+                ))}
+            </div>
+
+            {/* Left cat */}
+            <div className="cat-sidebar cat-left">
+                <img
+                    src={catImages[leftCatIndex]}
+                    alt="Cute cat"
+                    className="sidebar-cat"
+                />
+            </div>
+
+            {/* Right cat */}
+            <div className="cat-sidebar cat-right">
+                <img
+                    src={catImages[rightCatIndex]}
+                    alt="Cute cat"
+                    className="sidebar-cat"
+                />
+            </div>
 
             {/* Main content */}
-            <div className={`lyrics-content ${isReady ? 'lyrics-content-visible' : ''}`}>
+            <div className={`love-content ${isReady ? 'love-content-visible' : ''}`}>
                 {/* Header */}
-                <div className="lyrics-header">
-                    <div className="lyrics-now-playing">
-                        <span className="lyrics-playing-icon">♫</span>
-                        <span>Now Playing</span>
-                    </div>
-                    <h1 className="lyrics-title">Our Love Story</h1>
+                <div className="love-header">
+                    <h1 className="love-title">💕 Our Love Story 💕</h1>
                 </div>
 
                 {/* Lyrics container */}
                 <div
                     ref={lyricsContainerRef}
-                    className="lyrics-container"
+                    className="love-lyrics-container"
                 >
-                    {/* Top spacer for centering first lyrics */}
-                    <div className="lyrics-spacer" />
+                    <div className="love-lyrics-spacer" />
 
                     {lyrics.map((lyric, index) => {
                         const isActive = index === activeIndex;
@@ -141,74 +246,91 @@ export function LoveStoryPlayer() {
                                 key={index}
                                 ref={isActive ? activeLineRef : null}
                                 className={`
-                                    lyric-line
-                                    ${isActive ? 'lyric-line-active' : ''}
-                                    ${isPast ? 'lyric-line-past' : ''}
-                                    ${!isActive && !isPast ? 'lyric-line-future' : ''}
+                                    love-lyric-line
+                                    ${isActive ? 'love-lyric-active' : ''}
+                                    ${isPast ? 'love-lyric-past' : ''}
                                 `}
                             >
-                                <div className="lyric-english">{lyric.englishText}</div>
+                                <div className="love-lyric-english">{lyric.englishText}</div>
                                 {lyric.sinhalaText && (
-                                    <div className="lyric-sinhala">{lyric.sinhalaText}</div>
+                                    <div className="love-lyric-sinhala">{lyric.sinhalaText}</div>
                                 )}
                             </div>
                         );
                     })}
 
-                    {/* Bottom spacer for centering last lyrics */}
-                    <div className="lyrics-spacer" />
+                    <div className="love-lyrics-spacer" />
                 </div>
 
                 {/* Autoplay blocked message */}
                 {autoPlayBlocked && !isPlaying && (
-                    <div className="lyrics-autoplay-message">
-                        <button onClick={toggle} className="lyrics-tap-to-play">
-                            <span className="lyrics-play-icon">▶</span>
+                    <div className="love-autoplay-message">
+                        <button onClick={toggle} className="love-tap-to-play">
+                            <span>💝</span>
                             <span>Tap to play our song</span>
                         </button>
                     </div>
                 )}
 
                 {/* Bottom controls */}
-                <div className="lyrics-controls">
+                <div className="love-controls">
+                    {/* Emoji popup button */}
+                    <button
+                        className="emoji-popup-btn"
+                        onClick={handleEmojiPopup}
+                        title="Love Emojis!"
+                    >
+                        🎉
+                    </button>
+
                     {/* Progress bar */}
-                    <div className="lyrics-progress-container">
-                        <span className="lyrics-time">{formatTime(currentTime)}</span>
+                    <div className="love-progress-container">
+                        <span className="love-time">{formatTime(currentTime)}</span>
                         <div
-                            className="lyrics-progress-bar"
+                            className="love-progress-bar"
                             onClick={handleProgressClick}
                         >
                             <div
-                                className="lyrics-progress-fill"
+                                className="love-progress-fill"
                                 style={{ width: `${progress}%` }}
                             />
-                            <div
-                                className="lyrics-progress-thumb"
-                                style={{ left: `${progress}%` }}
-                            />
                         </div>
-                        <span className="lyrics-time">{formatTime(duration)}</span>
+                        <span className="love-time">{formatTime(duration)}</span>
                     </div>
 
                     {/* Play/Pause button */}
                     <button
                         onClick={toggle}
-                        className={`lyrics-play-btn ${isPlaying ? 'lyrics-playing' : ''}`}
+                        className={`love-play-btn ${isPlaying ? 'love-playing' : ''}`}
                         disabled={!isLoaded}
                     >
-                        {isPlaying ? (
-                            <svg viewBox="0 0 24 24" fill="currentColor" className="lyrics-icon">
-                                <rect x="6" y="4" width="4" height="16" rx="1" />
-                                <rect x="14" y="4" width="4" height="16" rx="1" />
-                            </svg>
-                        ) : (
-                            <svg viewBox="0 0 24 24" fill="currentColor" className="lyrics-icon">
-                                <path d="M8 5v14l11-7z" />
-                            </svg>
-                        )}
+                        {isPlaying ? '⏸️' : '▶️'}
                     </button>
                 </div>
             </div>
+
+            {/* Emoji Popup Overlay */}
+            {showEmojiPopup && (
+                <div className="emoji-popup-overlay" onClick={closeEmojiPopup}>
+                    <div className="emoji-popup-content">
+                        <p className="emoji-popup-text">💖 I Love You! 💖</p>
+                        {popupEmojis.map(emoji => (
+                            <span
+                                key={emoji.id}
+                                className="popup-emoji"
+                                style={{
+                                    left: `${emoji.left}%`,
+                                    fontSize: `${emoji.size}px`,
+                                    animationDuration: `${emoji.animationDuration}s`
+                                }}
+                            >
+                                {emoji.type}
+                            </span>
+                        ))}
+                        <p className="emoji-popup-hint">Tap anywhere to close</p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
