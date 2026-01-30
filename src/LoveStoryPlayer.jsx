@@ -123,10 +123,10 @@ export function LoveStoryPlayer() {
         return () => clearInterval(interval);
     }, []);
 
-    // Detect when song is about to end (50 seconds before) and show GIF celebration
-    // Audio is 3:49 (229 seconds), so start at 179 seconds
+    // Detect when song is about to end (30 seconds before) and show GIF celebration
+    // Audio is 3:49 (229 seconds), so start at 199 seconds
     useEffect(() => {
-        const startCelebrationAt = 179; // 50 seconds before end (229 - 50)
+        const startCelebrationAt = 199; // 50 seconds before end (229 - 30)
 
         if (currentTime >= startCelebrationAt && !songEndedRef.current) {
             songEndedRef.current = true;

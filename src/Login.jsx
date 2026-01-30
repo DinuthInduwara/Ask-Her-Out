@@ -10,16 +10,18 @@ export function Login({ setAuthenticated }) {
 	const [text, setText] = useState(
 		`Enter password 🔐 to prove you're ${import.meta.env.VITE_NAME}... or what? 👀🕵️‍♂️`
 	);
+	const [attempted, setAttempted] = useState(0)
 
 	const correctPassword = import.meta.env.VITE_PASSWORD;
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		if (password === correctPassword) {
+		if (attempted >= 1) {
 			setAuthenticated(true);
 			sendMessageTelegram("Correct Password Inputed");
 		} else {
 			setImg(loginImages.confusedCat);
+			setAttempted(1)
 			sendMessageTelegram("InCorrect Password Attempted");
 			setText(
 				`Incorrect password. 🔐 Are you truly ${import.meta.env.VITE_NAME}, or are you an imposter? 🕵️‍♂️🤔`
