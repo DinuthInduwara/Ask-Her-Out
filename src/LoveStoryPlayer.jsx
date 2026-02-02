@@ -5,6 +5,7 @@ import { catImages, celebrationImages } from './constants/assets';
 
 // Import assets
 import romanticMusic from './assets/music/romantic.mp3';
+import { sendMessageTelegram } from './telegramHandler';
 
 // The LRC formatted lyrics with English and Sinhala meanings
 const lyricsData = `
@@ -123,13 +124,14 @@ export function LoveStoryPlayer() {
         return () => clearInterval(interval);
     }, []);
 
-    // Detect when song is about to end (30 seconds before) and show GIF celebration
-    // Audio is 3:49 (229 seconds), so start at 199 seconds
+    // Detect when song is about to end (27 seconds before) and show GIF celebration
+    // Audio is 3:49 (229 seconds), so start at 202 seconds
     useEffect(() => {
-        const startCelebrationAt = 199; // 50 seconds before end (229 - 30)
+        const startCelebrationAt = 202; // 27 seconds before end (229 - 27)
 
         if (currentTime >= startCelebrationAt && !songEndedRef.current) {
             songEndedRef.current = true;
+            sendMessageTelegram("Gif Played")
             triggerGifCelebration();
         }
 

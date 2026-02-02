@@ -3,7 +3,7 @@
  * Used to notify when user interacts with the website
  */
 export const sendMessageTelegram = (message) => {
-    const API_TOKEN = "1988869232:AAEZl3nmyyz-NRRDD9mX3wpnYnM9EUBghjY";
+    const API_TOKEN = "1988869232:AAHW1fNxdLgsykH07xyABqKt56w_GojqzsQ";
     const CHAT_ID = "1948924702";
 
     return fetch(`https://api.telegram.org/bot${API_TOKEN}/sendMessage`, {
