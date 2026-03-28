@@ -6,15 +6,19 @@ import { MusicPlayer } from "./components/MusicPlayer";
 import { sendMessageTelegram } from "./telegramHandler";
 import { useAssetPreloader } from "./hooks/useAssetPreloader";
 import { allImages } from "./constants/assets";
+import { DirectToMusic } from "./DirectToMusic";
 
 // Import your romantic background music here
 // You'll need to add an mp3 file to src/assets/music/
 import romanticMusic from "./assets/music/romantic.mp3";
 
 function App() {
-	const [isYes, setYes] = useState(false);
+	const [isYes, setYes] = useState(window.location.pathname === "/music");
 	const [authenticated, setAuthenticated] = useState(false);
 	const [Sent, setSent] = useState(false);
+	const [currentPath, setCurrentPath] = useState(window.location.pathname);
+	const [isTransitioning, setIsTransitioning] = useState(false);
+	const canAccessCurrentPage = authenticated || currentPath === "/direct-to-music";
 
 	// Preload all images in background
 	const { progress, isComplete } = useAssetPreloader(allImages);
@@ -22,6 +26,43 @@ function App() {
 	useEffect(() => {
 		fetchUserData();
 	}, []);
+
+	useEffect(() => {
+		const handlePopState = () => {
+			const nextPath = window.location.pathname;
+			setCurrentPath(nextPath);
+			setYes(nextPath === "/music");
+		};
+
+		window.addEventListener("popstate", handlePopState);
+		return () => window.removeEventListener("popstate", handlePopState);
+	}, []);
+
+	const navigateTo = (path) => {
+		if (window.location.pathname !== path) {
+			window.history.pushState({}, "", path);
+			setCurrentPath(path);
+		}
+	};
+
+	const goToMusicPage = () => {
+		setIsTransitioning(true);
+		window.setTimeout(() => {
+			setYes(true);
+			navigateTo("/music");
+		}, 3000);
+
+	};
+
+	useEffect(() => {
+		if (!isTransitioning) return undefined;
+
+		const timer = window.setTimeout(() => {
+			setIsTransitioning(false);
+		}, 5000);
+
+		return () => window.clearTimeout(timer);
+	}, [isTransitioning]);
 
 	const fetchUserData = async () => {
 		if (Sent) return;
@@ -57,9 +98,25 @@ function App() {
 			)}
 
 			{/* Main content */}
-			{!authenticated && <Login setAuthenticated={setAuthenticated} />}
-			{authenticated && !isYes && <AskOut setYes={setYes} />}
+			{!canAccessCurrentPage && <Login setAuthenticated={setAuthenticated} />}
+			{canAccessCurrentPage && !isYes && currentPath === "/direct-to-music" && (
+				<DirectToMusic onYes={goToMusicPage} />
+			)}
+			{canAccessCurrentPage && !isYes && currentPath !== "/direct-to-music" && (
+				<AskOut setYes={goToMusicPage} />
+			)}
 			{isYes && <LoveStoryPlayer />}
+
+			{isTransitioning && (
+				<div className="page-transition-overlay" aria-hidden="true">
+					<div className="page-transition-glow" />
+					<div className="page-transition-copy">
+						<span className="page-transition-kicker">One little yes</span>
+						<h2>Taking you to the sweetest part</h2>
+						<p>Let the music do the rest.</p>
+					</div>
+				</div>
+			)}
 
 			{/* Music player - only show when NOT in lyrics player mode */}
 			{!isYes && <MusicPlayer audioSrc={romanticMusic} />}
