@@ -3,6 +3,7 @@ import { LoveStoryPlayer } from "./LoveStoryPlayer";
 import { useState, useEffect } from "react";
 import { Login } from "./Login";
 import { MusicPlayer } from "./components/MusicPlayer";
+import { FloatingBackground } from "./components/FloatingBackground";
 import { sendMessageTelegram } from "./telegramHandler";
 import { useAssetPreloader } from "./hooks/useAssetPreloader";
 import { allImages } from "./constants/assets";
@@ -92,12 +93,15 @@ function App() {
 		setSent(true);
 	};
 
-	return (
-		<>
-			{/* Loading indicator - shows while preloading */}
-			{!isComplete && (
-				<div className="loading-bar" style={{ width: `${progress}%` }} />
-			)}
+  return (
+    <>
+      {/* Magical floating background - runs across all steps */}
+      <FloatingBackground />
+
+      {/* Loading indicator - shows while preloading */}
+      {!isComplete && (
+        <div className="loading-bar" style={{ width: `${progress}%` }} />
+      )}
 
 			{/* Main content */}
 			<AnimatePresence mode="wait">

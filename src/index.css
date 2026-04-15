@@ -1458,8 +1458,127 @@
         font-size: 1.25rem;
     }
 
-    .gif-celebration-message {
-        font-size: 2.5rem;
-        padding: 1.5rem 3rem;
-    }
+.gif-celebration-message {
+  font-size: 2.5rem;
+  padding: 1.5rem 3rem;
+}
+}
+
+/* ==================== FLOATING BACKGROUND ==================== */
+
+.floating-background {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -10;
+  overflow: hidden;
+}
+
+.floating-emoji {
+  position: absolute;
+  bottom: 0;
+  transform-origin: center center;
+  filter: drop-shadow(0 2px 4px rgba(255, 107, 139, 0.2));
+  will-change: transform, opacity;
+}
+
+/* Add a gentle glow effect to floating emojis */
+.floating-emoji::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  background: radial-gradient(circle, rgba(255, 182, 193, 0.3) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Ensure floating background doesn't interfere on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .floating-background {
+    /* Reduce animation complexity on mobile for better performance */
+  }
+  
+  .floating-emoji {
+    /* Slightly smaller on mobile */
+    font-size: clamp(0.8rem, 2vw, 1.5rem) !important;
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .floating-background {
+    display: none;
+  }
+}
+
+/* ==================== INTERACTIVE FLOATING BACKGROUND ==================== */
+
+.floating-background-interactive {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  overflow: hidden;
+}
+
+.floating-emoji-interactive {
+  position: absolute;
+  transform-origin: center center;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  filter: drop-shadow(0 2px 6px rgba(255, 107, 139, 0.3));
+  will-change: transform;
+  z-index: 1;
+  /* Enable pointer events on the emoji itself */
+  pointer-events: auto;
+}
+
+.floating-emoji-interactive span {
+  display: inline-block;
+  transition: filter 0.2s ease;
+}
+
+.floating-emoji-interactive:hover span {
+  filter: drop-shadow(0 0 10px rgba(255, 107, 139, 0.6)) 
+          drop-shadow(0 0 20px rgba(255, 182, 193, 0.4));
+}
+
+.floating-emoji-interactive:active span {
+  transform: scale(0.9);
+}
+
+/* Particle explosion effect */
+.particle {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Larger particles for bigger emojis */
+@media (min-width: 768px) {
+  .particle {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* Mobile optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .floating-emoji-interactive {
+    /* Prevent text selection on mobile */
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .floating-background-interactive {
+    display: none;
+  }
 }
