@@ -6,8 +6,18 @@ import { sendMessageTelegram } from "./telegramHandler";
 export function AskOut({ setYes }) {
 	const [step, setStep] = useState(0);
 	const [noText, setNoText] = useState("No");
-	const [yesSize, setYesSize] = useState(24);
 	const [catImg, setCat] = useState(reactionImages.hug);
+	const [noButtonPosition, setNoButtonPosition] = useState({ x: 0, y: 0 });
+	const [isNoButtonMoved, setIsNoButtonMoved] = useState(false);
+
+	const hoverMessages = [
+		"Think again... 🥺",
+		"Are you sure? 🤔",
+		"Really? 💔",
+		"Please reconsider... 😢",
+		"Don't break my heart! 💔",
+		"Give it another thought! 🥺",
+	];
 
 	const noMessages = [
 		{ text: "Are you sure? 🤨", img: reactionImages.cattype },
@@ -19,17 +29,29 @@ export function AskOut({ setYes }) {
 		{ text: "You have no choice now! 😅", img: reactionImages.yesss },
 	];
 
+	const handleNoHover = () => {
+		if (!isNoButtonMoved) {
+			const randomMessage = hoverMessages[Math.floor(Math.random() * hoverMessages.length)];
+			setNoText(randomMessage);
+			
+			const containerWidth = window.innerWidth;
+			const containerHeight = window.innerHeight;
+			
+			const safePadding = 100;
+			const randomX = Math.random() * (containerWidth - 2 * safePadding) - containerWidth / 2 + safePadding;
+			const randomY = Math.random() * (containerHeight - 2 * safePadding) - containerHeight / 2 + safePadding;
+			
+			setNoButtonPosition({ x: randomX, y: randomY });
+			setIsNoButtonMoved(true);
+		}
+	};
+
 	const handleNoClick = () => {
 		if (step < noMessages.length) {
 			sendMessageTelegram(`😢 Inputed No ${step}`);
 			setNoText(noMessages[step].text);
 			setCat(noMessages[step].img);
-			// Smaller growth on mobile
-			const growthFactor = window.innerWidth < 768 ? 1.3 : 1.5;
-			setYesSize((prevSize) => Math.min(prevSize * growthFactor, window.innerWidth * 0.8));
 			setStep((prevStep) => prevStep + 1);
-		} else {
-			setYesSize(window.innerWidth * 0.5);
 		}
 	};
 
@@ -64,19 +86,25 @@ export function AskOut({ setYes }) {
 				I think you're really special and I like you a lot! 💖 Do you
 				feel the same way about me? 😊
 			</p>
-			<button
-				className="askout-yes-btn"
-				onClick={handleYesClick}
-				style={{ fontSize: Math.min(yesSize, window.innerWidth * 0.15) }}
-			>
-				Yes
-			</button>
-			<button
-				className="askout-no-btn"
-				onClick={handleNoClick}
-			>
-				{noText}
-			</button>
+			<div className="askout-buttons">
+				<button
+					className="askout-yes-btn"
+					onClick={handleYesClick}
+				>
+					Yes 💕
+				</button>
+				<button
+					className="askout-no-btn"
+					onClick={handleNoClick}
+					onMouseEnter={handleNoHover}
+					style={{
+						transform: isNoButtonMoved ? `translate(${noButtonPosition.x}px, ${noButtonPosition.y}px)` : 'translate(0, 0)',
+						transition: isNoButtonMoved ? 'transform 0.3s ease-out' : 'none',
+					}}
+				>
+					{noText}
+				</button>
+			</div>
 		</div>
 	);
 }
