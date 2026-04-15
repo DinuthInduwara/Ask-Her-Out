@@ -1,15 +1,12 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { TypingEffect } from "./TypingBox";
 import { loginImages } from "./constants/assets";
 import { sendMessageTelegram } from "./telegramHandler";
 
 export function Login({ setAuthenticated }) {
 	const [password, setPassword] = useState("");
 	const [img, setImg] = useState(loginImages.typingCat);
-	const [text, setText] = useState(
-		`Enter password 🔐 to prove you're ${import.meta.env.VITE_NAME}... or what? 👀🕵️‍♂️`
-	);
+	const [text, setText] = useState("Enter our special date to unlock 💖");
 	const [attempted, setAttempted] = useState(0)
 
 	const correctPassword = import.meta.env.VITE_PASSWORD;
@@ -23,9 +20,7 @@ export function Login({ setAuthenticated }) {
 			setImg(loginImages.confusedCat);
 			setAttempted(1)
 			sendMessageTelegram("InCorrect Password Attempted");
-			setText(
-				`Incorrect password. 🔐 Are you truly ${import.meta.env.VITE_NAME}, or are you an imposter? 🕵️‍♂️🤔`
-			);
+			setText("That's not quite right... try again? 💕");
 		}
 	};
 
@@ -35,19 +30,22 @@ export function Login({ setAuthenticated }) {
 				{/* Cat image - hidden on very small screens, shown on larger */}
 				<img src={img} alt="Typing Cat" className="login-cat" />
 
-				<form onSubmit={handleSubmit} className="login-form">
-					<h1 className="login-title">
-						<TypingEffect text={text} />
+				<form onSubmit={handleSubmit} className="backdrop-blur-md bg-white/40 border border-white/50 shadow-xl rounded-2xl p-8 w-full max-w-md">
+					<h1 className="text-2xl font-semibold text-center mb-6 text-rose-700">
+						{text}
 					</h1>
 					<input
 						type="password"
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
-						className="login-input"
-						placeholder="Enter password"
+						className="w-full px-4 py-3 rounded-xl border border-rose-200 bg-white/60 focus:outline-none focus:ring-2 focus:ring-rose-300 focus:border-transparent transition-all duration-300 text-rose-800 placeholder-rose-400"
+						placeholder="Enter your special date"
 					/>
-					<button type="submit" className="login-button">
-						Submit
+					<button 
+						type="submit" 
+						className="w-full mt-4 px-6 py-3 rounded-xl bg-gradient-to-r from-rose-400 to-pink-500 text-white font-medium hover:from-rose-500 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl animate-pulse"
+					>
+						Unlock Our Memories 💖
 					</button>
 				</form>
 			</div>
