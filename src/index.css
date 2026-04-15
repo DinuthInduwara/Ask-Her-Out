@@ -272,22 +272,48 @@
 }
 
 .askout-no-btn {
-    padding: 1rem 2.5rem;
-    background: linear-gradient(135deg, #f87171, #ef4444);
-    color: #fffafc;
-    border: none;
-    border-radius: 1rem;
-    cursor: pointer;
-    font-size: 1.1rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
-    position: relative;
+  padding: 1rem 2.5rem;
+  background: linear-gradient(135deg, #f87171, #ef4444);
+  color: #fffafc;
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+  position: relative;
+  /* Prevent button from being too large on mobile */
+  max-width: 90vw;
+  white-space: nowrap;
+  /* Enable touch events on mobile */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
 .askout-no-btn:hover {
-    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
-    transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+  transform: scale(1.05);
+}
+
+/* Responsive styles for mobile */
+@media (max-width: 480px) {
+  .askout-no-btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    min-width: 100px;
+    min-height: 48px;
+  }
+}
+
+@media (max-width: 360px) {
+  .askout-no-btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
+    min-width: 90px;
+    min-height: 44px;
+  }
 }
 
 @keyframes gentle-pulse {

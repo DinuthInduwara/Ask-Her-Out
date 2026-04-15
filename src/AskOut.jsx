@@ -1,51 +1,127 @@
-import { useState } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 import { reactionImages } from "./constants/assets";
 import { sendMessageTelegram } from "./telegramHandler";
 
 export function AskOut({ setYes }) {
-	const [step, setStep] = useState(0);
-	const [noText, setNoText] = useState("No");
-	const [catImg, setCat] = useState(reactionImages.hug);
-	const [noButtonPosition, setNoButtonPosition] = useState({ x: 0, y: 0 });
-	const [isNoButtonMoved, setIsNoButtonMoved] = useState(false);
+  const [step, setStep] = useState(0);
+  const [noText, setNoText] = useState("No");
+  const [catImg, setCat] = useState(reactionImages.hug);
+  const [noButtonPosition, setNoButtonPosition] = useState({ x: 0, y: 0 });
+  const [dodgeCount, setDodgeCount] = useState(0);
+  const noButtonRef = useRef(null);
+  const [buttonDimensions, setButtonDimensions] = useState({ width: 120, height: 50 });
+  const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
+  const [isPositionSet, setIsPositionSet] = useState(false);
 
-	const hoverMessages = [
-		"Think again... 🥺",
-		"Are you sure? 🤔",
-		"Really? 💔",
-		"Please reconsider... 😢",
-		"Don't break my heart! 💔",
-		"Give it another thought! 🥺",
-	];
+  const dodgeMessages = [
+    "Are you sure? 🤔",
+    "Think again 🥺",
+    "Please? 🥺",
+    "No way! 😤",
+    "Really? 💔",
+    "Come on! 🙏",
+    "Don't do this! 😢",
+    "Give it another chance! 💕",
+    "You know you want to! 😊",
+    "Please reconsider! 🥺",
+    "Are you sure? 🤨",
+    "Last chance! ⏳",
+    "Think again... 🧠",
+    "Don't do this... 😨",
+  ];
 
-	const noMessages = [
-		{ text: "Are you sure? 🤨", img: reactionImages.cattype },
-		{ text: "Really sure? 😬", img: reactionImages.mochi },
-		{ text: "Last chance! ⏳", img: reactionImages.mochi2 },
-		{ text: "Think again... 🧠", img: reactionImages.missu },
-		{ text: "Don't do this... 😨", img: reactionImages.peach },
-		{ text: "Come on, say yes! 🙋‍♂️", img: reactionImages.sayYs },
-		{ text: "You have no choice now! 😅", img: reactionImages.yesss },
-	];
+  const noMessages = [
+    { text: "Are you sure? 🤨", img: reactionImages.cattype },
+    { text: "Really sure? 😬", img: reactionImages.mochi },
+    { text: "Last chance! ⏳", img: reactionImages.mochi2 },
+    { text: "Think again... 🧠", img: reactionImages.missu },
+    { text: "Don't do this... 😨", img: reactionImages.peach },
+    { text: "Come on, say yes! 🙋‍♂️", img: reactionImages.sayYs },
+    { text: "You have no choice now! 😅", img: reactionImages.yesss },
+  ];
 
-	const handleNoHover = () => {
-		if (!isNoButtonMoved) {
-			const randomMessage = hoverMessages[Math.floor(Math.random() * hoverMessages.length)];
-			setNoText(randomMessage);
-			
-			const containerWidth = window.innerWidth;
-			const containerHeight = window.innerHeight;
-			
-			const safePadding = 100;
-			const randomX = Math.random() * (containerWidth - 2 * safePadding) - containerWidth / 2 + safePadding;
-			const randomY = Math.random() * (containerHeight - 2 * safePadding) - containerHeight / 2 + safePadding;
-			
-			setNoButtonPosition({ x: randomX, y: randomY });
-			setIsNoButtonMoved(true);
-		}
-	};
+  // Capture initial position on mount and update button dimensions when it changes
+  useEffect(() => {
+    if (noButtonRef.current) {
+      const rect = noButtonRef.current.getBoundingClientRect();
+      setButtonDimensions({ width: rect.width, height: rect.height });
+
+      // Store the initial position only once
+      if (!isPositionSet) {
+        setInitialPosition({ x: rect.left, y: rect.top });
+        setIsPositionSet(true);
+      }
+    }
+  }, [noText, isPositionSet]);
+
+  // Reset button position when window is resized (keeps it in bounds)
+  useEffect(() => {
+    const handleResize = () => {
+      // Reset position to ensure button is visible after resize
+      setNoButtonPosition({ x: 0, y: 0 });
+      setIsPositionSet(false);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  /**
+   * Calculates a random X and Y position strictly within the window bounds.
+   * Subtracts the button's width and height from max boundaries to prevent overflow.
+   * All positions are calculated relative to the button's INITIAL position in the layout.
+   */
+  const calculateSafePosition = useCallback(() => {
+    const { width: buttonWidth, height: buttonHeight } = buttonDimensions;
+    const safePadding = 16; // Minimum padding from edges (in pixels)
+    const scrollbarBuffer = 20; // Extra buffer for potential scrollbars
+
+    // Calculate maximum allowed positions within viewport
+    // Subtract button size and padding to ensure button stays fully visible
+    const maxX = Math.max(0, window.innerWidth - buttonWidth - safePadding - scrollbarBuffer);
+    const maxY = Math.max(0, window.innerHeight - buttonHeight - safePadding - scrollbarBuffer);
+    const minX = safePadding;
+    const minY = safePadding;
+
+    // Generate random position within safe bounds
+    const randomX = Math.random() * (maxX - minX) + minX;
+    const randomY = Math.random() * (maxY - minY) + minY;
+
+    // Calculate the translation needed from the INITIAL position to reach the random position
+    // This ensures the button always moves to an absolute position within viewport
+    const translateX = randomX - initialPosition.x;
+    const translateY = randomY - initialPosition.y;
+
+    return {
+      x: translateX,
+      y: translateY,
+    };
+  }, [buttonDimensions, initialPosition]);
+
+  /**
+   * Handle button dodge - triggers on both desktop (onMouseEnter) and mobile (onTouchStart).
+   * Updates position dynamically every time the user tries to interact with the button.
+   * Changes button text sequentially from dodgeMessages array.
+   */
+  const handleNoDodge = useCallback((e) => {
+    // Prevent default touch behavior to ensure smooth interaction
+    if (e?.preventDefault) {
+      e.preventDefault();
+    }
+
+    // Calculate new safe position
+    const newPosition = calculateSafePosition();
+
+    // Get next message in sequence (cycles through array)
+    const messageIndex = dodgeCount % dodgeMessages.length;
+
+    // Update state
+    setNoText(dodgeMessages[messageIndex]);
+    setNoButtonPosition(newPosition);
+    setDodgeCount((prev) => prev + 1);
+  }, [calculateSafePosition, dodgeCount, dodgeMessages]);
 
 	const handleNoClick = () => {
 		if (step < noMessages.length) {
@@ -126,17 +202,24 @@ export function AskOut({ setYes }) {
 					>
 						Yes 💕
 					</button>
-					<button
+					<motion.button
+						ref={noButtonRef}
 						className="askout-no-btn"
 						onClick={handleNoClick}
-						onMouseEnter={handleNoHover}
-						style={{
-							transform: isNoButtonMoved ? `translate(${noButtonPosition.x}px, ${noButtonPosition.y}px)` : 'translate(0, 0)',
-							transition: isNoButtonMoved ? 'transform 0.3s ease-out' : 'none',
+						onMouseEnter={handleNoDodge}
+						onTouchStart={handleNoDodge}
+						animate={{
+							x: noButtonPosition.x,
+							y: noButtonPosition.y
+						}}
+						transition={{
+							type: "spring",
+							stiffness: 300,
+							damping: 20
 						}}
 					>
 						{noText}
-					</button>
+					</motion.button>
 				</motion.div>
 			</motion.div>
 		</AnimatePresence>
