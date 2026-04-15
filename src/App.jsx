@@ -7,6 +7,7 @@ import { sendMessageTelegram } from "./telegramHandler";
 import { useAssetPreloader } from "./hooks/useAssetPreloader";
 import { allImages } from "./constants/assets";
 import { DirectToMusic } from "./DirectToMusic";
+import { AnimatePresence } from "framer-motion";
 
 // Import your romantic background music here
 // You'll need to add an mp3 file to src/assets/music/
@@ -99,14 +100,16 @@ function App() {
 			)}
 
 			{/* Main content */}
-			{!canAccessCurrentPage && <Login setAuthenticated={setAuthenticated} />}
-			{canAccessCurrentPage && !isYes && currentPath === "/direct-to-music" && (
-				<DirectToMusic onYes={goToMusicPage} />
-			)}
-			{canAccessCurrentPage && !isYes && currentPath !== "/direct-to-music" && (
-				<AskOut setYes={goToMusicPage} />
-			)}
-			{isYes && <LoveStoryPlayer />}
+			<AnimatePresence mode="wait">
+				{!canAccessCurrentPage && <Login key="login" setAuthenticated={setAuthenticated} />}
+				{canAccessCurrentPage && !isYes && currentPath === "/direct-to-music" && (
+					<DirectToMusic key="direct-to-music" onYes={goToMusicPage} />
+				)}
+				{canAccessCurrentPage && !isYes && currentPath !== "/direct-to-music" && (
+					<AskOut key="askout" setYes={goToMusicPage} />
+				)}
+				{isYes && <LoveStoryPlayer key="love-story" />}
+			</AnimatePresence>
 
 			{isTransitioning && (
 				<div className="page-transition-overlay" aria-hidden="true">

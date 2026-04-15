@@ -1,5 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
+import { motion, AnimatePresence } from "framer-motion";
 import { reactionImages } from "./constants/assets";
 import { sendMessageTelegram } from "./telegramHandler";
 
@@ -79,33 +80,66 @@ export function AskOut({ setYes }) {
 	};
 
 	return (
-		<div className="askout-container">
-			<img src={catImg} alt="Cute reaction" className="askout-cat" />
-			<h1 className="askout-greeting">Hi {import.meta.env.VITE_NAME}</h1>
-			<p className="askout-message">
-				I think you're really special and I like you a lot! 💖 Do you
-				feel the same way about me? 😊
-			</p>
-			<div className="askout-buttons">
-				<button
-					className="askout-yes-btn"
-					onClick={handleYesClick}
+		<AnimatePresence mode="wait">
+			<motion.div
+				className="askout-container"
+				initial={{ opacity: 0, y: 20 }}
+				animate={{ opacity: 1, y: 0 }}
+				exit={{ opacity: 0, y: -20 }}
+				transition={{ duration: 0.5 }}
+			>
+				<motion.img
+					src={catImg}
+					alt="Cute reaction"
+					className="askout-cat"
+					initial={{ opacity: 0, scale: 0.8 }}
+					animate={{ opacity: 1, scale: 1 }}
+					transition={{ duration: 0.5, delay: 0.2 }}
+					key={catImg}
+				/>
+				<motion.h1
+					className="askout-greeting"
+					initial={{ opacity: 0, y: 10 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.5, delay: 0.3 }}
 				>
-					Yes 💕
-				</button>
-				<button
-					className="askout-no-btn"
-					onClick={handleNoClick}
-					onMouseEnter={handleNoHover}
-					style={{
-						transform: isNoButtonMoved ? `translate(${noButtonPosition.x}px, ${noButtonPosition.y}px)` : 'translate(0, 0)',
-						transition: isNoButtonMoved ? 'transform 0.3s ease-out' : 'none',
-					}}
+					Hi {import.meta.env.VITE_NAME}
+				</motion.h1>
+				<motion.p
+					className="askout-message"
+					initial={{ opacity: 0, y: 10 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.5, delay: 0.4 }}
 				>
-					{noText}
-				</button>
-			</div>
-		</div>
+					I think you're really special and I like you a lot! 💖 Do you
+					feel the same way about me? 😊
+				</motion.p>
+				<motion.div
+					className="askout-buttons"
+					initial={{ opacity: 0, y: 10 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.5, delay: 0.5 }}
+				>
+					<button
+						className="askout-yes-btn"
+						onClick={handleYesClick}
+					>
+						Yes 💕
+					</button>
+					<button
+						className="askout-no-btn"
+						onClick={handleNoClick}
+						onMouseEnter={handleNoHover}
+						style={{
+							transform: isNoButtonMoved ? `translate(${noButtonPosition.x}px, ${noButtonPosition.y}px)` : 'translate(0, 0)',
+							transition: isNoButtonMoved ? 'transform 0.3s ease-out' : 'none',
+						}}
+					>
+						{noText}
+					</button>
+				</motion.div>
+			</motion.div>
+		</AnimatePresence>
 	);
 }
 

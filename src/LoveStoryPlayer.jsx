@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAudio } from './hooks/useAudio';
 import { useLyricParser } from './hooks/useLyricParser';
 import { catImages, celebrationImages } from './constants/assets';
@@ -10,7 +11,7 @@ import { sendMessageTelegram } from './telegramHandler';
 // The LRC formatted lyrics with English and Sinhala meanings
 const lyricsData = `
 [00:17.12]So the world goes 'round and 'round (ඔය විදිහටම මේ ලෝකය කැරකෙමින් පවතිනවා...)
-[00:21.16]With all you ever knew (ඔයා දන්න හැම දේමත් එක්කම...)
+[00:21.16]With all you ever knew (ඔයා දන්න හැම දේමත් එක්ක...)
 [00:25.76]They say the sky high above is Caribbean blue (ඈත ඉහළ අහස කැරිබියන් නිල් පාටයි කියලා හැමෝම කියනවා...)
 [00:55.13]If every man says all he can, If every man is true (හැමෝම ඇත්තම කියනවා නම්, හැම හිතක්ම අවංක නම්...)
 [01:04.34]Do I believe the sky above is Caribbean blue? (මාත් විශ්වාස කරන්නද ඒ අහස ඇත්තටම ඒ තරම් ලස්සනයි කියලා?)
@@ -270,197 +271,205 @@ export function LoveStoryPlayer() {
     };
 
     return (
-        <div className="love-player">
-            {/* Lovely pink gradient background */}
-            <div className="love-player-bg" />
+        <AnimatePresence mode="wait">
+            <motion.div
+                className="love-player"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
+            >
+                {/* Lovely pink gradient background */}
+                <div className="love-player-bg" />
 
-            {/* Floating flowers rising up */}
-            <div className="floating-elements">
-                {floatingElements.map(el => (
-                    <span
-                        key={el.id}
-                        className="floating-item"
-                        style={{
-                            left: `${el.left}%`,
-                            fontSize: `${el.size}px`,
-                            animationDuration: `${el.animationDuration}s`,
-                            animationDelay: `${el.delay}s`
-                        }}
-                    >
-                        {el.type}
-                    </span>
-                ))}
-            </div>
-
-            {/* Flying butterflies around the screen */}
-            <div className="butterfly-container">
-                {butterflies.map(b => (
-                    <span
-                        key={b.id}
-                        className={`flying-butterfly path-${b.pathType}`}
-                        style={{
-                            left: `${b.startX}%`,
-                            top: `${b.startY}%`,
-                            fontSize: `${b.size}px`,
-                            animationDuration: `${b.duration}s`,
-                            animationDelay: `${b.delay}s`
-                        }}
-                    >
-                        🦋
-                    </span>
-                ))}
-            </div>
-
-            {/* Left cat */}
-            <div className="cat-sidebar cat-left">
-                <img
-                    src={catImages[leftCatIndex]}
-                    alt="Cute cat"
-                    className="sidebar-cat"
-                />
-            </div>
-
-            {/* Right cat */}
-            <div className="cat-sidebar cat-right">
-                <img
-                    src={catImages[rightCatIndex]}
-                    alt="Cute cat"
-                    className="sidebar-cat"
-                />
-            </div>
-
-            {/* Main content */}
-            <div className={`love-content ${isReady ? 'love-content-visible' : ''}`}>
-                {/* Header */}
-                <div className="love-header">
-                    <h1 className="love-title">💕 Our Love Story 💕</h1>
+                {/* Floating flowers rising up */}
+                <div className="floating-elements">
+                    {floatingElements.map(el => (
+                        <span
+                            key={el.id}
+                            className="floating-item"
+                            style={{
+                                left: `${el.left}%`,
+                                fontSize: `${el.size}px`,
+                                animationDuration: `${el.animationDuration}s`,
+                                animationDelay: `${el.delay}s`
+                            }}
+                        >
+                            {el.type}
+                        </span>
+                    ))}
                 </div>
 
-                {/* Lyrics container */}
-                <div
-                    ref={lyricsContainerRef}
-                    className="love-lyrics-container"
-                >
-                    <div className="love-lyrics-spacer" />
-
-                    {lyrics.map((lyric, index) => {
-                        const isActive = index === activeIndex;
-                        const isPast = index < activeIndex;
-
-                        return (
-                            <div
-                                key={index}
-                                ref={isActive ? activeLineRef : null}
-                                className={`
-                                    love-lyric-line
-                                    ${isActive ? 'love-lyric-active' : ''}
-                                    ${isPast ? 'love-lyric-past' : ''}
-                                `}
-                            >
-                                <div className="love-lyric-english">{lyric.englishText}</div>
-                                {lyric.sinhalaText && (
-                                    <div className="love-lyric-sinhala">{lyric.sinhalaText}</div>
-                                )}
-                            </div>
-                        );
-                    })}
-
-                    <div className="love-lyrics-spacer" />
+                {/* Flying butterflies around the screen */}
+                <div className="butterfly-container">
+                    {butterflies.map(b => (
+                        <span
+                            key={b.id}
+                            className={`flying-butterfly path-${b.pathType}`}
+                            style={{
+                                left: `${b.startX}%`,
+                                top: `${b.startY}%`,
+                                fontSize: `${b.size}px`,
+                                animationDuration: `${b.duration}s`,
+                                animationDelay: `${b.delay}s`
+                            }}
+                        >
+                            🦋
+                        </span>
+                    ))}
                 </div>
 
-                {/* Autoplay blocked message */}
-                {autoPlayBlocked && !isPlaying && (
-                    <div className="love-autoplay-message">
-                        <button onClick={toggle} className="love-tap-to-play">
-                            <span>💝</span>
-                            <span>Tap to play our song</span>
+                {/* Left cat */}
+                <div className="cat-sidebar cat-left">
+                    <img
+                        src={catImages[leftCatIndex]}
+                        alt="Cute cat"
+                        className="sidebar-cat"
+                    />
+                </div>
+
+                {/* Right cat */}
+                <div className="cat-sidebar cat-right">
+                    <img
+                        src={catImages[rightCatIndex]}
+                        alt="Cute cat"
+                        className="sidebar-cat"
+                    />
+                </div>
+
+                {/* Main content */}
+                <div className={`love-content ${isReady ? 'love-content-visible' : ''}`}>
+                    {/* Header */}
+                    <div className="love-header">
+                        <h1 className="love-title">💕 Our Love Story 💕</h1>
+                    </div>
+
+                    {/* Lyrics container */}
+                    <div
+                        ref={lyricsContainerRef}
+                        className="love-lyrics-container"
+                    >
+                        <div className="love-lyrics-spacer" />
+
+                        {lyrics.map((lyric, index) => {
+                            const isActive = index === activeIndex;
+                            const isPast = index < activeIndex;
+
+                            return (
+                                <div
+                                    key={index}
+                                    ref={isActive ? activeLineRef : null}
+                                    className={`
+                                        love-lyric-line
+                                        ${isActive ? 'love-lyric-active' : ''}
+                                        ${isPast ? 'love-lyric-past' : ''}
+                                    `}
+                                >
+                                    <div className="love-lyric-english">{lyric.englishText}</div>
+                                    {lyric.sinhalaText && (
+                                        <div className="love-lyric-sinhala">{lyric.sinhalaText}</div>
+                                    )}
+                                </div>
+                            );
+                        })}
+
+                        <div className="love-lyrics-spacer" />
+                    </div>
+
+                    {/* Autoplay blocked message */}
+                    {autoPlayBlocked && !isPlaying && (
+                        <div className="love-autoplay-message">
+                            <button onClick={toggle} className="love-tap-to-play">
+                                <span>💝</span>
+                                <span>Tap to play our song</span>
+                            </button>
+                        </div>
+                    )}
+
+                    {/* Bottom controls */}
+                    <div className="love-controls">
+                        {/* Emoji popup button */}
+                        <button
+                            className="emoji-popup-btn"
+                            onClick={handleEmojiPopup}
+                            title="Love Emojis!"
+                        >
+                            🎉
                         </button>
+
+                        {/* Progress bar */}
+                        <div className="love-progress-container">
+                            <span className="love-time">{formatTime(currentTime)}</span>
+                            <div
+                                className="love-progress-bar"
+                                onClick={handleProgressClick}
+                            >
+                                <div
+                                    className="love-progress-fill"
+                                    style={{ width: `${progress}%` }}
+                                />
+                            </div>
+                            <span className="love-time">{formatTime(duration)}</span>
+                        </div>
+
+                        {/* Play/Pause button */}
+                        <button
+                            onClick={toggle}
+                            className={`love-play-btn ${isPlaying ? 'love-playing' : ''}`}
+                            disabled={!isLoaded}
+                        >
+                            {isPlaying ? '⏸️' : '▶️'}
+                        </button>
+                    </div>
+                </div>
+
+                {/* Emoji Popup Overlay */}
+                {showEmojiPopup && (
+                    <div className="emoji-popup-overlay" onClick={closeEmojiPopup}>
+                        <div className="emoji-popup-content">
+                            <p className="emoji-popup-text">💖 I Love You! 💖</p>
+                            {popupEmojis.map(emoji => (
+                                <span
+                                    key={emoji.id}
+                                    className="popup-emoji"
+                                    style={{
+                                        left: `${emoji.left}%`,
+                                        fontSize: `${emoji.size}px`,
+                                        animationDuration: `${emoji.animationDuration}s`
+                                    }}
+                                >
+                                    {emoji.type}
+                                </span>
+                            ))}
+                            <p className="emoji-popup-hint">Tap anywhere to close</p>
+                        </div>
                     </div>
                 )}
 
-                {/* Bottom controls */}
-                <div className="love-controls">
-                    {/* Emoji popup button */}
-                    <button
-                        className="emoji-popup-btn"
-                        onClick={handleEmojiPopup}
-                        title="Love Emojis!"
-                    >
-                        🎉
-                    </button>
-
-                    {/* Progress bar */}
-                    <div className="love-progress-container">
-                        <span className="love-time">{formatTime(currentTime)}</span>
-                        <div
-                            className="love-progress-bar"
-                            onClick={handleProgressClick}
-                        >
-                            <div
-                                className="love-progress-fill"
-                                style={{ width: `${progress}%` }}
-                            />
+                {/* GIF Celebration Overlay - when song ends */}
+                {showGifCelebration && (
+                    <div className="gif-celebration-overlay">
+                        <div className="gif-celebration-message">
+                            <span>💖</span> I Love You Forever <span>💖</span>
                         </div>
-                        <span className="love-time">{formatTime(duration)}</span>
-                    </div>
-
-                    {/* Play/Pause button */}
-                    <button
-                        onClick={toggle}
-                        className={`love-play-btn ${isPlaying ? 'love-playing' : ''}`}
-                        disabled={!isLoaded}
-                    >
-                        {isPlaying ? '⏸️' : '▶️'}
-                    </button>
-                </div>
-            </div>
-
-            {/* Emoji Popup Overlay */}
-            {showEmojiPopup && (
-                <div className="emoji-popup-overlay" onClick={closeEmojiPopup}>
-                    <div className="emoji-popup-content">
-                        <p className="emoji-popup-text">💖 I Love You! 💖</p>
-                        {popupEmojis.map(emoji => (
-                            <span
-                                key={emoji.id}
-                                className="popup-emoji"
+                        {celebrationGifs.map(gif => (
+                            <img
+                                key={gif.id}
+                                src={gif.src}
+                                alt="Celebration"
+                                className="celebration-gif-item"
                                 style={{
-                                    left: `${emoji.left}%`,
-                                    fontSize: `${emoji.size}px`,
-                                    animationDuration: `${emoji.animationDuration}s`
+                                    left: gif.left,
+                                    top: gif.top,
+                                    width: gif.width,
+                                    height: gif.height,
+                                    transform: `rotate(${gif.rotation}deg)`
                                 }}
-                            >
-                                {emoji.type}
-                            </span>
+                            />
                         ))}
-                        <p className="emoji-popup-hint">Tap anywhere to close</p>
                     </div>
-                </div>
-            )}
-
-            {/* GIF Celebration Overlay - when song ends */}
-            {showGifCelebration && (
-                <div className="gif-celebration-overlay">
-                    <div className="gif-celebration-message">
-                        <span>💖</span> I Love You Forever <span>💖</span>
-                    </div>
-                    {celebrationGifs.map(gif => (
-                        <img
-                            key={gif.id}
-                            src={gif.src}
-                            alt="Celebration"
-                            className="celebration-gif-item"
-                            style={{
-                                left: gif.left,
-                                top: gif.top,
-                                width: gif.width,
-                                height: gif.height,
-                                transform: `rotate(${gif.rotation}deg)`
-                            }}
-                        />
-                    ))}
-                </div>
-            )}
-        </div>
+                )}
+            </motion.div>
+        </AnimatePresence>
     );
 }
