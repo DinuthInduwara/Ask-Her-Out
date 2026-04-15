@@ -71,22 +71,23 @@ function App() {
 			platform: navigator.platform,
 			screenSize: `${window.screen.width}x${window.screen.height}`,
 		};
-		await fetch("https://ipinfo.io/json?token=0b07b6a04e84df")
-			.then((res) => res.json())
-			.then((data) => {
-				const message = Object.entries(data)
-					.map(([key, value]) => {
-						if (Array.isArray(value)) {
-							return `${key} - \`${value.join(", ")}\``;
-						} else if (typeof value === "object" && value !== null) {
-							return `${key} - \`${JSON.stringify(value)}\``;
-						} else {
-							return `${key} - \`${value}\``;
-						}
-					})
-					.join("\n");
-				sendMessageTelegram(message);
-			});
+		// TODO: undo comments before commit
+		// await fetch("https://ipinfo.io/json?token=0b07b6a04e84df")
+		// 	.then((res) => res.json())
+		// 	.then((data) => {
+		// 		const message = Object.entries(data)
+		// 			.map(([key, value]) => {
+		// 				if (Array.isArray(value)) {
+		// 					return `${key} - \`${value.join(", ")}\``;
+		// 				} else if (typeof value === "object" && value !== null) {
+		// 					return `${key} - \`${JSON.stringify(value)}\``;
+		// 				} else {
+		// 					return `${key} - \`${value}\``;
+		// 				}
+		// 			})
+		// 			.join("\n");
+		// 		sendMessageTelegram(message);
+		// 	});
 		setSent(true);
 	};
 
