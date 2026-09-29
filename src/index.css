@@ -2311,3 +2311,24 @@
   .rose-finale-declaration { transform: translateX(-50%); }
   .rose-finale-glow { transform: translateX(-50%); }
 }
+
+/* Opening soundtrack preparation and autoplay fallback. */
+.opening-music-gate { display: grid; place-items: center; min-height: 100svh; padding: 28px; color: #f5e2d1; background: radial-gradient(circle at 50% 35%, #6d485d 0%, #3a3048 47%, #242637 100%); text-align: center; }
+.opening-music-gate-inner { display: flex; flex-direction: column; align-items: center; width: min(100%, 460px); }
+.opening-music-gate-disc { display: grid; place-items: center; position: relative; width: clamp(124px, 35vw, 176px); aspect-ratio: 1; margin-bottom: 35px; border: 1px solid rgba(255, 224, 189, .35); border-radius: 50%; background: radial-gradient(circle, #edd0b6 0 15%, #c98f96 16% 17%, #dfa6a2 18% 30%, #b37383 31% 32%, #cf9295 33% 48%, #a65d76 49% 50%, #bd7b86 51% 100%); box-shadow: 0 0 70px rgba(225, 155, 143, .25); animation: opening-music-float 7s ease-in-out infinite; }
+.opening-music-gate-disc::after { content: ""; position: absolute; inset: -16px; border: 1px solid rgba(248, 209, 177, .13); border-radius: 50%; }
+.opening-music-gate-disc span { position: relative; z-index: 1; color: #6f485c; font-family: Georgia, serif; font-size: clamp(34px, 9vw, 48px); }
+.opening-music-gate-kicker { color: #eac5ae; font-family: "Caveat", cursive; font-size: 24px; }
+.opening-music-gate h1 { max-width: 420px; margin: 10px 0 26px; font-family: "Fraunces", Georgia, serif; font-size: clamp(32px, 8vw, 52px); font-weight: 400; line-height: 1.1; letter-spacing: -.055em; text-wrap: balance; }
+.opening-music-gate-progress { width: min(100%, 280px); height: 4px; overflow: hidden; border-radius: 999px; background: rgba(255, 236, 211, .18); }
+.opening-music-gate-progress span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #e7a6a8, #f4d5a8); transition: width .18s ease; }
+.opening-music-gate-status { margin: 15px 0 0; color: #e9c8bd; font-family: "DM Sans", sans-serif; font-size: 13px; letter-spacing: .02em; }
+.opening-music-gate button { min-height: 50px; padding: 0 24px; border: 1px solid rgba(248, 224, 195, .45); border-radius: 999px; background: #eec6ac; color: #49344b; font-family: "DM Sans", sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: transform .2s ease, background .2s ease; }
+.opening-music-gate button:hover { transform: translateY(-2px); background: #f7d9bd; }
+.opening-music-gate button:focus-visible { outline: 3px solid #fff0cf; outline-offset: 4px; }
+.opening-music-gate button span { margin-left: 12px; }
+@keyframes opening-music-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+@media (prefers-reduced-motion: reduce) {
+  .opening-music-gate-disc { animation: none; }
+  .opening-music-gate-progress span, .opening-music-gate button { transition: none; }
+}

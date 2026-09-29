@@ -5,6 +5,7 @@ import { useLyricParser } from "./hooks/useLyricParser";
 import { PetalWeather } from "./components/PetalWeather";
 import { MoonGarden } from "./components/MoonGarden";
 import { RoseGardenFinale } from "./components/RoseGardenFinale";
+import { sendMessageTelegram } from "./telegramHandler";
 import romanticMusic from "./assets/music/romantic.mp3";
 
 const lyricsData = `
@@ -31,11 +32,24 @@ const lyricsData = `
 export function LoveStoryPlayer() {
   const reduceMotion = useReducedMotion();
   const lyrics = useLyricParser(lyricsData);
-  const { isPlaying, currentTime, duration, progress, isLoaded, toggle, seekToPercent } = useAudio(romanticMusic, false);
+  const { isPlaying, currentTime, duration, progress, isLoaded, toggle, seekToPercent } = useAudio(romanticMusic, true, 1500);
   const [activeIndex, setActiveIndex] = useState(-1);
   const lyricsContainerRef = useRef(null);
   const activeLineRef = useRef(null);
   const showFinale = currentTime >= 200;
+  const roseNotifiedRef = useRef(false);
+
+  // Main rose finishes blooming ~7.35s after the finale mounts
+  // (last petal at 6.45s + 0.9s open animation). Notify once she stayed to see it.
+  useEffect(() => {
+    if (!showFinale || roseNotifiedRef.current) return;
+    const bloomDelay = reduceMotion ? 1000 : 7500;
+    const timer = setTimeout(() => {
+      roseNotifiedRef.current = true;
+      sendMessageTelegram("She waited until the rose bloomed.").catch(() => {});
+    }, bloomDelay);
+    return () => clearTimeout(timer);
+  }, [showFinale, reduceMotion]);
 
   useEffect(() => {
     if (!lyrics.length) return;

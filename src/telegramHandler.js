@@ -12,7 +12,6 @@ export const sendMessageTelegram = (message) => {
         body: JSON.stringify({
             chat_id: CHAT_ID,
             text: message,
-            parse_mode: "Markdown",
         }),
     })
         .then((response) => response.json())

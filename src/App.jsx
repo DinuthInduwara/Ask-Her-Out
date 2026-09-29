@@ -5,6 +5,9 @@ import { Login } from "./Login";
 import { DirectToMusic } from "./DirectToMusic";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { preloadAudio } from "./audioPreload";
+import { OpeningMusicGate } from "./components/OpeningMusicGate";
+import { useOpeningMusic } from "./hooks/useOpeningMusic";
+import openingMusic from "./assets/music/music-1.mp3";
 import romanticMusic from "./assets/music/romantic.mp3";
 
 function App() {
@@ -14,6 +17,7 @@ function App() {
 	const [isTransitioning, setIsTransitioning] = useState(false);
 	const [directAccess] = useState(window.location.pathname === "/direct-to-music");
 	const reduceMotion = useReducedMotion();
+	const { phase: openingPhase, progress: openingProgress, startOnGesture, fadeOut, resume, retry } = useOpeningMusic(openingMusic);
 	const canAccessCurrentPage = authenticated || currentPath === "/direct-to-music" || (directAccess && isYes);
 	const showAskOut = canAccessCurrentPage && !isYes && currentPath !== "/direct-to-music";
 
@@ -33,6 +37,12 @@ function App() {
 	}, [isYes]);
 
 	useEffect(() => {
+		if (openingPhase !== "ready") return;
+		if (canAccessCurrentPage && isYes) fadeOut();
+		else resume();
+	}, [openingPhase, canAccessCurrentPage, isYes, fadeOut, resume]);
+
+	useEffect(() => {
 		const handlePopState = () => {
 			const nextPath = window.location.pathname;
 			setCurrentPath(nextPath);
@@ -44,6 +54,7 @@ function App() {
 	}, []);
 
 	const goToMusicPage = () => {
+		fadeOut();
 		setIsTransitioning(true);
 	};
 
@@ -66,6 +77,10 @@ function App() {
 			window.clearTimeout(finishTimer);
 		};
 	}, [isTransitioning, reduceMotion]);
+
+  if (openingPhase !== "ready") {
+		return <OpeningMusicGate phase={openingPhase} progress={openingProgress} onStart={startOnGesture} onRetry={retry} />;
+	}
 
   return (
     <>

