@@ -8,6 +8,33 @@ const gardenRoses = [
   { id: 4, left: "61%", delay: "8.5s", scale: .8 },
   { id: 5, left: "78%", delay: "7.9s", scale: 1.1 },
   { id: 6, left: "94%", delay: "9.1s", scale: .75 },
+  { id: 7, left: "16%", delay: "9.5s", scale: .54 },
+  { id: 8, left: "85%", delay: "9.8s", scale: .58 },
+];
+
+const fireflies = [
+  { x: "8%", y: "12%", delay: "-2s", size: "3px" },
+  { x: "19%", y: "22%", delay: "-5s", size: "2px" },
+  { x: "30%", y: "10%", delay: "-1s", size: "2px" },
+  { x: "40%", y: "18%", delay: "-4s", size: "3px" },
+  { x: "63%", y: "13%", delay: "-3s", size: "2px" },
+  { x: "78%", y: "24%", delay: "-6s", size: "3px" },
+  { x: "91%", y: "16%", delay: "-2.5s", size: "2px" },
+  { x: "12%", y: "39%", delay: "-4.5s", size: "3px" },
+  { x: "86%", y: "42%", delay: "-1.5s", size: "2px" },
+  { x: "6%", y: "58%", delay: "-5.5s", size: "2px" },
+  { x: "94%", y: "62%", delay: "-3.5s", size: "3px" },
+  { x: "23%", y: "57%", delay: "-1.2s", size: "2px" },
+  { x: "72%", y: "57%", delay: "-6.2s", size: "2px" },
+];
+
+const fallingPetals = [
+  { left: "7%", delay: "-2s", duration: "14s", drift: "54px" },
+  { left: "22%", delay: "-8s", duration: "17s", drift: "-32px" },
+  { left: "38%", delay: "-5s", duration: "16s", drift: "40px" },
+  { left: "58%", delay: "-11s", duration: "18s", drift: "-48px" },
+  { left: "76%", delay: "-4s", duration: "15s", drift: "35px" },
+  { left: "91%", delay: "-10s", duration: "19s", drift: "-44px" },
 ];
 
 function GardenRose({ left, delay, scale }) {
@@ -39,8 +66,16 @@ GardenRose.propTypes = {
 
 export const RoseGardenFinale = memo(function RoseGardenFinale() {
   return (
-    <div className="rose-finale" role="img" aria-label="A rose grows from its roots and opens petal by petal, then a garden of roses blooms behind it">
+    <div className="rose-finale" role="img" aria-label="A rose grows from its roots, opens petal by petal, and a garden blooms beneath a moon. I love you.">
       <div className="rose-finale-glow" />
+      <div className="rose-finale-night" aria-hidden="true">
+        <svg className="rose-finale-moon" viewBox="0 0 24 24" fill="none">
+          <path d="M20.985 12.486A9 9 0 0 1 11.514 3.015a9 9 0 1 0 9.47 9.47Z" fill="#f3cfaa" />
+        </svg>
+        {fireflies.map((light, index) => <span key={index} className="rose-finale-firefly" style={{ "--light-x": light.x, "--light-y": light.y, "--light-delay": light.delay, "--light-size": light.size }} />)}
+        {fallingPetals.map((petal, index) => <span key={index} className="rose-finale-falling-petal" style={{ "--petal-x": petal.left, "--petal-delay": petal.delay, "--petal-duration": petal.duration, "--petal-drift": petal.drift }} />)}
+      </div>
+      <span className="rose-finale-declaration">I love you.</span>
       <div className="rose-finale-garden" aria-hidden="true">
         {gardenRoses.map((rose) => <GardenRose key={rose.id} {...rose} />)}
       </div>
