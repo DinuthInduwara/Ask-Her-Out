@@ -1,67 +1,29 @@
-# 💌 Ask Her Out - Romantic Gesture Web App 💘
+# A Little Question for You
 
-A charming and interactive web application designed to help you confess your feelings in a memorable way! Customize with your crush's name and a secret password for a personalized experience. 
+A mobile-first invitation built with React, Vite, and Framer Motion. It opens in daylight with clouds and birds, then shifts to a moonlit garden with blooming flowers after the second guess. The page keeps to the real details: knowing each other in 4th and 5th grade, then meeting again 13 years later.
 
-![Demo Screenshot](https://github.com/DinuthInduwara/Ask-Her-Out/blob/main/public/Capture.PNG?raw=true) 
-
-## ✨ Features
-- 🌹 **Personalized Love Message** with your crush's name
-- 🔒 **Password Protection** for private access
-- � **Customizable** colors, animations, and messages
-- 💐 Romantic background effects and transitions
-- 📱 Responsive design for all devices
-
-## 🛠️ Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/DinuthInduwara/Ask-Her-Out.git
-   ```
-2. Install dependencies:
-    ```bash
-    cd Ask-Her-Out
-    npm install
-    ```
-## ⚙️ Configuration
-
-1. Create .env file in root directory
-2. Add your custom values:
-    ```env
-    VITE_PASSWORD = "your_secret_password_here"
-    VITE_NAME = "Your_Crush's_Name_Here"
-    ```
-**🔐 Pro Tip: Choose a password only you two know!**
-**⚠️ Never commit your .env file! Add it to .gitignore**
-## 🚀 Usage
-1. Start the development server:
+## Run locally
 
 ```bash
+npm install
 npm run dev
 ```
-2. For production build:
-```bash
-npm start
+
+Open the URL printed by Vite (usually `http://localhost:5173`).
+
+To personalize the name, optionally create `.env`:
+
+```env
+VITE_NAME="Her Name"
 ```
-3. Visit `http://localhost:3000` and:
-    - Enter your secret password 🔑
 
-    - Watch the magic unfold with ${NAME}'s personalized message! ✨
-## � Customization Options
-Make it truly yours by modifying:
+The opening screen is playful, not a security gate: the first submission shows a wrong-password message and the second opens the invitation, regardless of what was typed. No password is required.
 
-- **� Colors:** Update CSS variables in `styles.css`
-- **💬 Messages:** Edit messages in `config.json`
-- **🎆 Animations:** Adjust animation parameters
-- **🎵 Add Music:** Include romantic background tracks
-- **🖼️ Images:** Add personal photos in `/assets`
+## Checks
 
-## 📄 License
+```bash
+npm run build
+npm run lint
+```
 
-Distributed under the MIT License. See LICENSE for more information.
-
-##
----
-
-Made with ❤️ by [Dinuth Induwara](https://github.com/DinuthInduwara)  
-💡 Inspired by lovers everywhere 💑  
-🌟 Star the repo if you like it!  
-🐞 Found an issue? [Open a ticket](https://github.com/DinuthInduwara/Ask-Her-Out/issues) in GitHub Issues
+The invitation asks whether she has ever had feelings for you. Its Yes button opens the synced moon-and-flowers music player through a flower-bloom transition. The direct music shortcut remains available at `/direct-to-music`. The "Maybe another time" button playfully dodges attempts and never selects an answer. The large audio file begins loading during the opening pages so playback is ready sooner.

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { releasePreparedAudio, takePreparedAudio } from '../audioPreload';
 
 /**
  * Custom hook for managing audio playback with precise timestamp tracking
@@ -6,12 +7,15 @@ import { useState, useRef, useEffect, useCallback } from 'react';
  * 
  * @param {string} audioSrc - Source URL for the audio file
  * @param {boolean} autoPlay - Whether to attempt autoplay on mount
+ * @param {number} fadeInMs - Duration of the first-play volume fade
  * @returns {Object} Audio control functions and state
  */
-export function useAudio(audioSrc, autoPlay = false) {
+export function useAudio(audioSrc, autoPlay = false, fadeInMs = 0) {
     const audioRef = useRef(null);
     const animationFrameRef = useRef(null);
+    const volumeFrameRef = useRef(null);
     const isPlayingRef = useRef(false);
+    const firstPlayRef = useRef(true);
 
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
@@ -42,12 +46,34 @@ export function useAudio(audioSrc, autoPlay = false) {
         }
     }, []);
 
+    const stopVolumeFade = useCallback(() => {
+        if (volumeFrameRef.current) cancelAnimationFrame(volumeFrameRef.current);
+        volumeFrameRef.current = null;
+    }, []);
+
+    const fadeIn = useCallback((audio) => {
+        if (!fadeInMs) {
+            audio.volume = 1;
+            return;
+        }
+        const startedAt = performance.now();
+        const step = (now) => {
+            audio.volume = Math.min(1, (now - startedAt) / fadeInMs);
+            if (audio.volume < 1 && !audio.paused) volumeFrameRef.current = requestAnimationFrame(step);
+            else volumeFrameRef.current = null;
+        };
+        volumeFrameRef.current = requestAnimationFrame(step);
+    }, [fadeInMs]);
+
     // Initialize audio element
     useEffect(() => {
-        const audio = new Audio(audioSrc);
+        const audio = takePreparedAudio(audioSrc);
         audio.preload = 'auto';
-        audio.loop = true;
+        audio.loop = false;
+        audio.volume = fadeInMs ? 0 : 1;
         audioRef.current = audio;
+        firstPlayRef.current = true;
+        let attemptedAutoPlay = false;
 
         const handleLoadedMetadata = () => {
             setDuration(audio.duration);
@@ -57,27 +83,27 @@ export function useAudio(audioSrc, autoPlay = false) {
         const handleEnded = () => {
             setIsPlaying(false);
             isPlayingRef.current = false;
-            setCurrentTime(0);
+            setCurrentTime(audio.duration);
             stopTimeLoop();
+            stopVolumeFade();
+            audio.volume = 1;
         };
 
-        const handleCanPlayThrough = () => {
-            if (autoPlay && !isPlayingRef.current) {
-                audio.play().then(() => {
-                    setIsPlaying(true);
-                    isPlayingRef.current = true;
-                    setAutoPlayBlocked(false);
-                    startTimeLoop();
-                }).catch(() => {
-                    setAutoPlayBlocked(true);
-                });
-            }
+        const attemptAutoPlay = () => {
+            if (!autoPlay || attemptedAutoPlay) return;
+            attemptedAutoPlay = true;
+            audio.play().catch(() => setAutoPlayBlocked(true));
         };
 
         // Native play/pause events for sync
         const handlePlay = () => {
             setIsPlaying(true);
             isPlayingRef.current = true;
+            setAutoPlayBlocked(false);
+            if (firstPlayRef.current) {
+                firstPlayRef.current = false;
+                fadeIn(audio);
+            }
             startTimeLoop();
         };
 
@@ -85,6 +111,8 @@ export function useAudio(audioSrc, autoPlay = false) {
             setIsPlaying(false);
             isPlayingRef.current = false;
             stopTimeLoop();
+            stopVolumeFade();
+            audio.volume = 1;
             // Update time one more time when paused
             setCurrentTime(audio.currentTime);
         };
@@ -96,29 +124,35 @@ export function useAudio(audioSrc, autoPlay = false) {
 
         audio.addEventListener('loadedmetadata', handleLoadedMetadata);
         audio.addEventListener('ended', handleEnded);
-        audio.addEventListener('canplaythrough', handleCanPlayThrough);
+        audio.addEventListener('canplay', attemptAutoPlay);
         audio.addEventListener('play', handlePlay);
         audio.addEventListener('pause', handlePause);
         audio.addEventListener('seeked', handleSeeked);
 
-        // Start loading
-        audio.load();
+        // Preloading may finish before this component mounts.
+        if (audio.readyState >= 1) handleLoadedMetadata();
+        if (audio.readyState >= 3) attemptAutoPlay();
+        if (audio.readyState === 0 && audio.networkState !== HTMLMediaElement.NETWORK_LOADING) audio.load();
 
         return () => {
             stopTimeLoop();
+            stopVolumeFade();
             audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
             audio.removeEventListener('ended', handleEnded);
-            audio.removeEventListener('canplaythrough', handleCanPlayThrough);
+            audio.removeEventListener('canplay', attemptAutoPlay);
             audio.removeEventListener('play', handlePlay);
             audio.removeEventListener('pause', handlePause);
             audio.removeEventListener('seeked', handleSeeked);
-            audio.pause();
-            audio.src = '';
+            releasePreparedAudio(audioSrc, audio);
         };
-    }, [audioSrc, autoPlay, startTimeLoop, stopTimeLoop]);
+    }, [audioSrc, autoPlay, fadeInMs, fadeIn, startTimeLoop, stopTimeLoop, stopVolumeFade]);
 
     const play = useCallback(() => {
         if (audioRef.current) {
+            if (audioRef.current.ended) {
+                audioRef.current.currentTime = 0;
+                setCurrentTime(0);
+            }
             audioRef.current.play().catch((error) => {
                 console.warn('Play failed:', error);
             });
