@@ -1,5 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import PropTypes from "prop-types";
+
+const emojis = ["💖", "✨", "🌸", "🦋", "💕", "🌟", "🌺", "💗", "⭐", "🌷", "🎀", "💝", "🦋", "✨", "💫"];
 
 /**
  * Interactive Floating Background - Full-screen floating emojis that:
@@ -14,8 +17,6 @@ import { motion, AnimatePresence } from "framer-motion";
  */
 export function FloatingBackground() {
   // Emojis and icons to use
-  const emojis = ["💖", "✨", "🌸", "🦋", "💕", "🌟", "🌺", "💗", "⭐", "🌷", "🎀", "💝", "🦋", "✨", "💫"];
-  
   const [elements, setElements] = useState([]);
   const [particles, setParticles] = useState([]);
   const [sparkles, setSparkles] = useState([]);
@@ -256,6 +257,15 @@ function SparkleParticle({ x, y, size, opacity, duration, delay }) {
   );
 }
 
+SparkleParticle.propTypes = {
+  x: PropTypes.number.isRequired,
+  y: PropTypes.number.isRequired,
+  size: PropTypes.number.isRequired,
+  opacity: PropTypes.number.isRequired,
+  duration: PropTypes.number.isRequired,
+  delay: PropTypes.number.isRequired,
+};
+
 /**
  * Individual floating emoji - styled in monochrome/pastel pink
  */
@@ -337,6 +347,22 @@ function FloatingEmoji({ element, onInteract }) {
   );
 }
 
+FloatingEmoji.propTypes = {
+  element: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    emoji: PropTypes.string.isRequired,
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    size: PropTypes.number.isRequired,
+    floatDuration: PropTypes.number.isRequired,
+    floatDelay: PropTypes.number.isRequired,
+    swayAmount: PropTypes.number.isRequired,
+    rotation: PropTypes.number.isRequired,
+    opacity: PropTypes.number.isRequired,
+  }).isRequired,
+  onInteract: PropTypes.func.isRequired,
+};
+
 /**
  * Particle explosion effect - pastel pink colored
  */
@@ -374,3 +400,10 @@ function ParticleExplosion({ x, y, angle, distance }) {
     />
   );
 }
+
+ParticleExplosion.propTypes = {
+  x: PropTypes.number.isRequired,
+  y: PropTypes.number.isRequired,
+  angle: PropTypes.number.isRequired,
+  distance: PropTypes.number.isRequired,
+};

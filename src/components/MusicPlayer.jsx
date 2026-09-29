@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from "react";
+import PropTypes from "prop-types";
 
 /**
  * Simple floating music player with play/pause button
  * Design kept minimal and cute to match the theme
  */
-export function MusicPlayer({ audioSrc }) {
+export function MusicPlayer({ audioSrc, variant }) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolume] = useState(0.5);
     const [showVolume, setShowVolume] = useState(false);
@@ -38,8 +39,8 @@ export function MusicPlayer({ audioSrc }) {
     };
 
     return (
-        <div className="music-player">
-            <audio ref={audioRef} src={audioSrc} loop preload="auto" />
+        <div className={`music-player${variant === "letter" ? " music-player--letter" : ""}`}>
+            <audio ref={audioRef} src={audioSrc} loop preload="none" />
 
             <button
                 onClick={togglePlay}
@@ -71,3 +72,8 @@ export function MusicPlayer({ audioSrc }) {
         </div>
     );
 }
+
+MusicPlayer.propTypes = {
+    audioSrc: PropTypes.string.isRequired,
+    variant: PropTypes.string,
+};
