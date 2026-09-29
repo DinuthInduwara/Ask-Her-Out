@@ -47,7 +47,7 @@ export function useAudio(audioSrc, autoPlay = false) {
     useEffect(() => {
         const audio = takePreparedAudio(audioSrc);
         audio.preload = 'auto';
-        audio.loop = true;
+        audio.loop = false;
         audioRef.current = audio;
 
         const handleLoadedMetadata = () => {
@@ -58,7 +58,7 @@ export function useAudio(audioSrc, autoPlay = false) {
         const handleEnded = () => {
             setIsPlaying(false);
             isPlayingRef.current = false;
-            setCurrentTime(0);
+            setCurrentTime(audio.duration);
             stopTimeLoop();
         };
 
@@ -120,6 +120,10 @@ export function useAudio(audioSrc, autoPlay = false) {
 
     const play = useCallback(() => {
         if (audioRef.current) {
+            if (audioRef.current.ended) {
+                audioRef.current.currentTime = 0;
+                setCurrentTime(0);
+            }
             audioRef.current.play().catch((error) => {
                 console.warn('Play failed:', error);
             });

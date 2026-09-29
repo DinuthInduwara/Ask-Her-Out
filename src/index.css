@@ -2212,3 +2212,77 @@
   .love-letter-page .garden-flower--left { left: -85px; }
   .love-letter-page .garden-flower--right { right: -85px; }
 }
+
+/* 3:20 finale: roots, climbing stem, leaves, one rose, then a garden. */
+.song-garden-cover,
+.song-garden-lyrics { transition: opacity 1.5s ease, transform 1.5s ease; }
+.song-garden-page--finale .song-garden-cover { opacity: 0; transform: translateY(-22px); pointer-events: none; }
+.song-garden-page--finale .song-garden-lyrics { opacity: 0; transform: translateY(18px); pointer-events: none; }
+.song-garden-page--finale .petal-weather { opacity: 0; transition: opacity 1.2s; }
+.song-garden-header,
+.song-garden-controls { position: relative; z-index: 4; }
+.rose-finale { position: fixed; z-index: 2; inset: 0; isolation: isolate; overflow: hidden; pointer-events: none; background: radial-gradient(ellipse at 50% 38%, #493447 0%, #2d2638 55%, #211f2d 100%); animation: rose-finale-arrive 1.4s ease both; }
+.rose-finale::after { content: ""; position: absolute; z-index: 0; left: 0; right: 0; bottom: 0; height: 37%; background: linear-gradient(transparent, rgba(44, 53, 48, .38)); opacity: 0; animation: rose-finale-ground 2s 7.6s ease both; }
+.rose-finale-glow { position: absolute; z-index: 0; top: 12%; left: 50%; width: min(83vw, 580px); aspect-ratio: 1; border-radius: 50%; transform: translateX(-50%); background: radial-gradient(circle, rgba(216, 133, 139, .2), transparent 65%); opacity: 0; animation: rose-finale-halo 2s 4.5s ease both; }
+.rose-finale-main { position: absolute; z-index: 2; bottom: 66px; left: 50%; width: min(95vw, 470px); height: min(calc(100svh - 90px), 690px); transform: translateX(-50%); overflow: visible; filter: drop-shadow(0 10px 22px rgba(20, 13, 25, .24)); }
+.rose-finale-roots path,
+.rose-finale-stem { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.rose-finale-roots path { animation: rose-finale-draw 1.35s .55s cubic-bezier(.35, 0, .4, 1) both; }
+.rose-finale-roots path:nth-child(2) { animation-delay: .7s; }
+.rose-finale-roots path:nth-child(3) { animation-delay: .85s; }
+.rose-finale-roots path:nth-child(4) { animation-delay: 1s; }
+.rose-finale-roots path:nth-child(5) { animation-delay: 1.1s; }
+.rose-finale-stem { animation: rose-finale-draw 2.3s 1.5s cubic-bezier(.3, 0, .25, 1) both; }
+.rose-finale-leaf { transform-box: fill-box; transform-origin: 50% 100%; animation: rose-finale-leaf-open .9s cubic-bezier(.2, 1.2, .4, 1) both; }
+.rose-finale-leaf--one { animation-delay: 2.9s; }
+.rose-finale-leaf--two { animation-delay: 3.3s; }
+.rose-finale-leaf--three { animation-delay: 3.7s; }
+.rose-finale-thorns { opacity: 0; animation: rose-finale-soft-in .6s 3.4s both; }
+.rose-finale-petal { transform-box: fill-box; transform-origin: 50% 100%; animation: rose-finale-petal-open .9s cubic-bezier(.18, 1.1, .35, 1) both; }
+.rose-finale-petal--one { animation-delay: 4.2s; }
+.rose-finale-petal--two { animation-delay: 4.45s; }
+.rose-finale-petal--three { animation-delay: 4.7s; }
+.rose-finale-petal--four { animation-delay: 4.95s; }
+.rose-finale-petal--five { animation-delay: 5.2s; }
+.rose-finale-petal--six { animation-delay: 5.45s; }
+.rose-finale-petal--seven { animation-delay: 5.7s; }
+.rose-finale-petal--eight { animation-delay: 5.95s; }
+.rose-finale-petal--nine { animation-delay: 6.2s; }
+.rose-finale-petal--ten { animation-delay: 6.45s; }
+.rose-finale-garden { position: absolute; z-index: 1; inset: 0; }
+.rose-finale-garden-plant { position: absolute; bottom: 79px; left: var(--rose-left); width: clamp(72px, 12vw, 135px); transform: translateX(-50%); }
+.rose-finale-garden-plant svg { display: block; width: 100%; height: auto; overflow: visible; scale: var(--rose-scale); transform-origin: bottom center; }
+.rose-finale-mini-stem { stroke-dasharray: 1; stroke-dashoffset: 1; animation: rose-finale-draw 1.7s var(--rose-delay) ease both; }
+.rose-finale-mini-leaf { transform-box: fill-box; transform-origin: 50% 100%; animation: rose-finale-leaf-open .8s calc(var(--rose-delay) + 1s) ease both; }
+.rose-finale-mini-leaf--two { animation-delay: calc(var(--rose-delay) + 1.25s); }
+.rose-finale-mini-bloom { transform-box: fill-box; transform-origin: 50% 100%; animation: rose-finale-petal-open 1.1s calc(var(--rose-delay) + 1.55s) cubic-bezier(.18, 1.1, .35, 1) both; }
+.rose-finale-caption { position: absolute; z-index: 3; bottom: calc(85px + env(safe-area-inset-bottom)); left: 50%; width: 100%; transform: translateX(-50%); color: #e9adad; font-family: "Caveat", cursive; font-size: clamp(25px, 6vw, 33px); line-height: 1; text-align: center; opacity: 0; animation: rose-finale-caption-in .8s 12.2s both; }
+@keyframes rose-finale-arrive { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rose-finale-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes rose-finale-leaf-open { from { opacity: 0; transform: scale(.05) rotate(-20deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+@keyframes rose-finale-petal-open { from { opacity: 0; transform: scale(.08) rotate(-13deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+@keyframes rose-finale-soft-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rose-finale-ground { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rose-finale-halo { from { opacity: 0; transform: translateX(-50%) scale(.65); } to { opacity: 1; transform: translateX(-50%) scale(1); } }
+@keyframes rose-finale-caption-in { from { opacity: 0; transform: translate(-50%, 12px); } to { opacity: 1; transform: translate(-50%, 0); } }
+@media (max-width: 480px) {
+  .rose-finale-garden-plant:nth-child(3),
+  .rose-finale-garden-plant:nth-child(4) { display: none; }
+  .rose-finale-garden-plant { bottom: 75px; width: 82px; }
+  .rose-finale-caption { bottom: calc(91px + env(safe-area-inset-bottom)); }
+}
+@media (min-width: 900px) {
+  .rose-finale-garden-plant { bottom: 61px; }
+  .rose-finale-main { width: 500px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .song-garden-page--finale .song-garden-cover,
+  .song-garden-page--finale .song-garden-lyrics,
+  .song-garden-page--finale .petal-weather { transition: none !important; }
+  .rose-finale, .rose-finale *, .rose-finale::after { animation: none !important; }
+  .rose-finale-roots path, .rose-finale-stem, .rose-finale-mini-stem { stroke-dashoffset: 0; }
+  .rose-finale-leaf, .rose-finale-petal, .rose-finale-mini-leaf, .rose-finale-mini-bloom,
+  .rose-finale-glow, .rose-finale-caption, .rose-finale::after { opacity: 1; transform: none; }
+  .rose-finale-caption { transform: translateX(-50%); }
+  .rose-finale-glow { transform: translateX(-50%); }
+}

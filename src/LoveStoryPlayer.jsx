@@ -4,6 +4,7 @@ import { useAudio } from "./hooks/useAudio";
 import { useLyricParser } from "./hooks/useLyricParser";
 import { PetalWeather } from "./components/PetalWeather";
 import { MoonGarden } from "./components/MoonGarden";
+import { RoseGardenFinale } from "./components/RoseGardenFinale";
 import romanticMusic from "./assets/music/romantic.mp3";
 
 const lyricsData = `
@@ -34,6 +35,7 @@ export function LoveStoryPlayer() {
   const [activeIndex, setActiveIndex] = useState(-1);
   const lyricsContainerRef = useRef(null);
   const activeLineRef = useRef(null);
+  const showFinale = currentTime >= 200;
 
   useEffect(() => {
     if (!lyrics.length) return;
@@ -64,17 +66,17 @@ export function LoveStoryPlayer() {
   };
 
   return (
-    <motion.main className="song-garden-page" initial={reduceMotion ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduceMotion ? 0 : .55 }}>
+    <motion.main className={`song-garden-page ${showFinale ? "song-garden-page--finale" : ""}`} initial={reduceMotion ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduceMotion ? 0 : .55 }}>
       <PetalWeather />
       <div className="song-garden-shell">
         <header className="song-garden-header"><span aria-hidden="true">✳</span> a little song for you</header>
-        <div className={`song-garden-cover ${isPlaying ? "song-garden-cover--playing" : ""}`}>
+        <div className={`song-garden-cover ${isPlaying ? "song-garden-cover--playing" : ""}`} aria-hidden={showFinale}>
           <MoonGarden />
           <p className="song-garden-kicker">for you, after all this time</p>
           <h1>A song for you.</h1>
           <span className="song-garden-handnote">I’m glad I saw you again ♡</span>
         </div>
-        <div className="song-garden-lyrics" ref={lyricsContainerRef} aria-label="Song lyrics">
+        <div className="song-garden-lyrics" ref={lyricsContainerRef} aria-label="Song lyrics" aria-hidden={showFinale}>
           <div className="song-garden-lyric-spacer" />
           {lyrics.map((lyric, index) => (
             <div key={`${lyric.time}-${index}`} ref={index === activeIndex ? activeLineRef : null} className={`song-garden-lyric ${index === activeIndex ? "song-garden-lyric--active" : ""} ${index < activeIndex ? "song-garden-lyric--past" : ""}`}>
@@ -84,6 +86,7 @@ export function LoveStoryPlayer() {
           ))}
           <div className="song-garden-lyric-spacer" />
         </div>
+        {showFinale && <RoseGardenFinale />}
         <div className="song-garden-controls">
           <div className="song-garden-progress">
             <span>{formatTime(currentTime)}</span>
