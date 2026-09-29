@@ -1638,14 +1638,6 @@
 
 @keyframes reunion-turn { to { transform: translate(-50%, -50%) rotate(360deg); } }
 
-/* A short curtain bridges the invitation and the music page. */
-
-.reunion-curtain { position: fixed; inset: 0; z-index: 500; display: grid; place-items: center; overflow: hidden; color: var(--cream, #f3e7d2); background: #24473f; transform-origin: left center; }
-.reunion-curtain::before { content: ""; position: absolute; width: min(85vw, 500px); aspect-ratio: 1; border: 1px solid rgba(240, 188, 118, .5); border-radius: 50%; box-shadow: 0 0 0 40px rgba(240, 188, 118, .07), 0 0 0 80px rgba(240, 188, 118, .04); }
-.reunion-curtain-copy { position: relative; text-align: center; }
-.reunion-curtain-copy span { color: #f0bc76; font-family: "Caveat", cursive; font-size: 31px; }
-.reunion-curtain-copy h2 { margin: 6px 0 0; font-family: "Fraunces", Georgia, serif; font-size: clamp(2.4rem, 8vw, 4.5rem); font-weight: 500; letter-spacing: -.05em; }
-
 @media (min-width: 760px) {
   .reunion-shell, .reunion-login-shell { width: min(100% - 80px, 1250px); }
   .reunion-header, .reunion-login-header { min-height: 84px; }
@@ -1766,8 +1758,7 @@
   .reunion-page *, .reunion-page *::before, .reunion-page *::after,
   .reunion-login *, .reunion-login *::before, .reunion-login *::after,
   .direct-music-page *, .direct-music-page *::before, .direct-music-page *::after,
-  .love-player *, .love-player *::before, .love-player *::after,
-  .reunion-curtain, .reunion-curtain::before { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .love-player *, .love-player *::before, .love-player *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
 
 /* A little dusk weather: paper swallows above the years, petals behind the note. */
@@ -2067,4 +2058,157 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .song-note-page *, .song-note-page *::before, .song-note-page *::after { animation: none !important; transition: none !important; }
+}
+
+/* Daylight opens the story; the second guess turns the sky to night. */
+.day-letter-login {
+  color: #483a46;
+  background: linear-gradient(180deg, #9cc9d3 0%, #c7d9cf 48%, #f0c6a4 100%);
+}
+.day-letter-login::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 24%, #68435e, #30253b 56%, #261e33);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.3s ease-in-out;
+}
+.day-letter-login--sunset::after { opacity: 1; }
+.day-letter-login .love-letter-header { color: #563c4c; transition: opacity .5s; }
+.day-letter-login .love-letter-monogram { color: #925865; }
+.day-letter-login .love-letter-login-hero { overflow: hidden; }
+.day-letter-login .love-letter-login-kicker { color: #6b4a57; }
+.day-letter-login .love-letter-login-copy h1 { color: #493747; text-shadow: 0 2px 18px rgba(247, 228, 202, .27); }
+.day-letter-login .love-letter-login-copy h1 em { color: #995e62; }
+.day-letter-login .love-letter-login-note { background: #f7e5c8; }
+.day-letter-login .love-letter-login-note button { background: #865268; }
+.day-letter-login .love-letter-login-note button:hover:not(:disabled) { background: #6b4057; }
+.day-letter-login .love-letter-login-note button:disabled { cursor: wait; }
+.day-letter-login .love-letter-footer { color: #624957; transition: opacity .5s; }
+.day-letter-login .love-letter-footer span { color: #925865; }
+.day-letter-login .love-letter-login-copy,
+.day-letter-login .love-letter-login-note { transition: opacity .55s, transform .55s; }
+.day-letter-login--sunset .love-letter-header,
+.day-letter-login--sunset .love-letter-footer,
+.day-letter-login--sunset .love-letter-login-copy,
+.day-letter-login--sunset .love-letter-login-note { opacity: 0 !important; }
+.day-sky { position: absolute; inset: 0; pointer-events: none; }
+.day-sun,
+.day-moon { position: absolute; top: 8px; left: 50%; width: 182px; aspect-ratio: 1; border-radius: 50%; transition: transform 1.3s cubic-bezier(.6, 0, .3, 1), opacity 1s ease; }
+.day-sun { z-index: 1; transform: translateX(-50%); background: radial-gradient(circle at 36% 30%, #ffe7aa, #f6b76e 65%, #e58f67); box-shadow: 0 0 50px rgba(255, 219, 141, .52), 0 0 100px rgba(255, 216, 149, .35); }
+.day-moon { z-index: 2; opacity: 0; transform: translate(-50%, 55px) scale(.72); background: radial-gradient(circle at 33% 30%, #ffebc5, #efb887 70%, #ce8b86); box-shadow: 0 0 50px rgba(247, 191, 138, .25); }
+.day-letter-login--sunset .day-sun { opacity: 0; transform: translate(-50%, 230px) scale(.7); }
+.day-letter-login--sunset .day-moon { opacity: 1; transform: translate(-50%, 0) scale(1); }
+.day-cloud { position: absolute; z-index: 2; width: 120px; height: 37px; filter: drop-shadow(0 8px 14px rgba(106, 124, 131, .13)); animation: day-cloud-drift 12s ease-in-out infinite alternate; transition: opacity .8s, transform 1.2s; }
+.day-cloud span { position: absolute; bottom: 0; background: #f7e7cb; border-radius: 50% 50% 35% 35%; }
+.day-cloud span:nth-child(1) { left: 0; width: 58px; height: 29px; }
+.day-cloud span:nth-child(2) { left: 29px; width: 62px; height: 50px; }
+.day-cloud span:nth-child(3) { right: 0; width: 58px; height: 31px; }
+.day-cloud--one { top: 6%; left: -48px; transform: scale(.85); }
+.day-cloud--two { top: 37%; right: -49px; transform: scale(.7); animation-delay: -5s; }
+.day-cloud--three { top: 2%; right: -26px; transform: scale(.52); animation-delay: -9s; }
+.day-letter-login--sunset .day-cloud { opacity: 0; }
+.day-bird { position: absolute; z-index: 3; width: 43px; color: #684b60; animation: reunion-bird-glide 8s ease-in-out infinite alternate; transition: opacity .7s, transform 1.2s; }
+.day-bird svg { display: block; width: 100%; height: auto; }
+.day-bird--one { top: 24%; left: 13%; }
+.day-bird--two { top: 12%; right: 11%; width: 34px; animation-delay: -4s; }
+.day-bird--three { top: 40%; right: 18%; width: 23px; animation-delay: -7s; }
+.day-letter-login--sunset .day-bird { opacity: 0; }
+.day-horizon { position: absolute; z-index: 0; left: -20%; right: -20%; bottom: -115px; height: 200px; border-radius: 50% 50% 0 0; background: rgba(103, 138, 137, .17); transition: opacity .7s; }
+.day-letter-login--sunset .day-horizon { opacity: 0; }
+@keyframes day-cloud-drift { from { translate: -12px 0; } to { translate: 18px 0; } }
+@media (min-width: 760px) {
+  .day-sun, .day-moon { top: 15px; width: 265px; }
+  .day-cloud--one { left: 5%; }
+  .day-cloud--two { right: 3%; }
+  .day-cloud--three { right: 18%; }
+  .day-bird--one { left: 22%; width: 60px; }
+  .day-bird--two { right: 21%; width: 48px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .day-letter-login::after,
+  .day-letter-login *, .day-letter-login *::before, .day-letter-login *::after { animation: none !important; transition: none !important; }
+}
+
+/* A flower opens into the song; no unrelated curtain color. */
+.song-bloom-transition { position: fixed; z-index: 500; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 38px; overflow: hidden; color: #f4c67e; background: radial-gradient(circle at 50% 46%, #70485f 0%, #39283d 49%, #261e33 100%); pointer-events: none; }
+.song-bloom-transition::before { content: ""; position: absolute; width: min(92vw, 550px); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(244, 198, 126, .21), transparent 65%); animation: song-bloom-halo 1.4s ease-out both; }
+.song-bloom-disc { position: relative; width: min(56vw, 225px); aspect-ratio: 1; animation: song-bloom-rise 1.4s cubic-bezier(.22, 1, .36, 1) both; }
+.song-bloom-disc > span { position: absolute; top: 3%; left: 38%; width: 24%; height: 47%; border-radius: 80% 80% 35% 35%; background: linear-gradient(#efb7a2, #c78089); transform-origin: 50% 100%; animation: song-bloom-petal 1s cubic-bezier(.22, 1, .36, 1) both; }
+.song-bloom-disc > span:nth-child(1) { --turn: 0deg; }
+.song-bloom-disc > span:nth-child(2) { --turn: 60deg; }
+.song-bloom-disc > span:nth-child(3) { --turn: 120deg; }
+.song-bloom-disc > span:nth-child(4) { --turn: 180deg; }
+.song-bloom-disc > span:nth-child(5) { --turn: 240deg; }
+.song-bloom-disc > span:nth-child(6) { --turn: 300deg; }
+.song-bloom-disc i { position: absolute; top: 39%; left: 39%; display: grid; place-items: center; width: 22%; aspect-ratio: 1; border-radius: 50%; color: #5f3b50; background: #f4c67e; font-family: "Fraunces", Georgia, serif; font-size: clamp(25px, 7vw, 43px); font-style: normal; }
+.song-bloom-transition p { position: relative; margin: 0; color: #f9dfc0; font-family: "Caveat", cursive; font-size: clamp(28px, 6vw, 38px); animation: reunion-fade-up .7s .4s both; }
+@keyframes song-bloom-petal { from { transform: rotate(var(--turn)) scaleY(0); opacity: 0; } to { transform: rotate(var(--turn)) scaleY(1); opacity: 1; } }
+@keyframes song-bloom-rise { from { transform: scale(.6) rotate(-20deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+@keyframes song-bloom-halo { from { transform: scale(.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .song-bloom-transition *, .song-bloom-transition::before { animation: none !important; }
+}
+
+/* The moon becomes the record; flowers carry the garden into the music. */
+.song-garden-cover { min-height: 285px; justify-content: flex-end; padding: 174px 0 17px; }
+.song-garden-cover .moon-garden { z-index: 0; }
+.song-garden-cover .moon-garden-halo { top: -15px; width: 250px; }
+.song-garden-cover .moon-garden-moon { top: 3px; width: 157px; background: repeating-radial-gradient(circle, transparent 0 6px, rgba(80, 43, 62, .15) 7px 8px, transparent 9px 14px), radial-gradient(circle at 30% 25%, #ffebc5, #e6aa8d 66%, #b46f79); }
+.song-garden-cover .moon-garden-moon::after { content: "♪"; display: grid; place-items: center; top: 35%; left: 35%; width: 30%; height: 30%; border: 1px solid rgba(81, 48, 62, .35); border-radius: 50%; color: #734355; background: #f0dec0; filter: none; font-family: "Fraunces", Georgia, serif; font-size: 25px; }
+.song-garden-cover--playing .moon-garden-moon { animation: song-moon-turn 14s linear infinite; }
+.song-garden-cover .garden-flower { bottom: 38px; width: 112px; opacity: .85; }
+.song-garden-cover .garden-flower--left { left: -64px; }
+.song-garden-cover .garden-flower--right { right: -64px; }
+.song-garden-cover .reunion-bird--first { top: 13%; left: 14%; width: 42px; color: #f1c9ad; }
+.song-garden-cover .reunion-bird--second { top: 10%; right: 15%; width: 31px; color: #e9b0a7; }
+.song-garden-cover .song-garden-kicker,
+.song-garden-cover h1,
+.song-garden-cover .song-garden-handnote { position: relative; z-index: 1; }
+@keyframes song-moon-turn { from { transform: translateX(-50%) rotate(0); } to { transform: translateX(-50%) rotate(360deg); } }
+@media (min-width: 760px) {
+  .song-garden-cover { min-height: 325px; padding-top: 205px; }
+  .song-garden-cover .moon-garden-moon { width: 190px; }
+  .song-garden-cover .moon-garden-halo { width: 310px; }
+  .song-garden-cover .garden-flower { width: 150px; bottom: 25px; }
+  .song-garden-cover .garden-flower--left { left: 40px; }
+  .song-garden-cover .garden-flower--right { right: 40px; }
+}
+@media (max-height: 670px) {
+  .song-garden-cover { min-height: 230px; padding-top: 132px; padding-bottom: 8px; }
+  .song-garden-cover .moon-garden-moon { width: 118px; }
+  .song-garden-cover .moon-garden-halo { width: 210px; }
+  .song-garden-cover .garden-flower { width: 88px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .song-garden-cover--playing .moon-garden-moon { animation: none; }
+}
+
+/* Night arrives after the daylight scene; the flower heads open on entry. */
+.love-letter-page .moon-garden-moon { animation: night-moon-rise 1.15s cubic-bezier(.22, 1, .36, 1) both, moon-garden-glow 8s 1.15s ease-in-out infinite alternate; }
+.garden-flower-head { transform-box: fill-box; transform-origin: center; animation: garden-flower-open 1s .55s cubic-bezier(.22, 1, .36, 1) both; }
+.love-letter-memory { display: block; }
+.love-letter-eyes { display: block; max-width: 340px; margin: 3px auto 0; color: #f5c9a9; font-family: "Caveat", cursive; font-size: 22px; line-height: 1.12; }
+.love-letter-hero { min-height: 610px; }
+@keyframes night-moon-rise { from { transform: translate(-50%, 55px) scale(.78); } to { transform: translateX(-50%) scale(1); } }
+@keyframes garden-flower-open { from { transform: scale(.05) rotate(-18deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+@media (min-width: 760px) {
+  .love-letter-hero { min-height: 760px; }
+  .love-letter-eyes { max-width: none; font-size: 28px; }
+}
+@media (max-width: 359px) {
+  .love-letter-hero { min-height: 575px; }
+  .love-letter-eyes { font-size: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .love-letter-page .moon-garden-moon,
+  .garden-flower-head { animation: none !important; }
+}
+
+@media (max-width: 759px) {
+  .love-letter-page .garden-flower { width: 120px; }
+  .love-letter-page .garden-flower--left { left: -85px; }
+  .love-letter-page .garden-flower--right { right: -85px; }
 }

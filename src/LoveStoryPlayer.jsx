@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { useAudio } from "./hooks/useAudio";
 import { useLyricParser } from "./hooks/useLyricParser";
 import { PetalWeather } from "./components/PetalWeather";
+import { MoonGarden } from "./components/MoonGarden";
 import romanticMusic from "./assets/music/romantic.mp3";
 
 const lyricsData = `
@@ -67,11 +68,11 @@ export function LoveStoryPlayer() {
       <PetalWeather />
       <div className="song-garden-shell">
         <header className="song-garden-header"><span aria-hidden="true">✳</span> a little song for you</header>
-        <div className="song-garden-cover">
-          <div className={`song-garden-record ${isPlaying ? "song-garden-record--playing" : ""}`} aria-hidden="true"><div className="song-garden-record-label">✳</div></div>
-          <p className="song-garden-kicker">put the world on pause</p>
+        <div className={`song-garden-cover ${isPlaying ? "song-garden-cover--playing" : ""}`}>
+          <MoonGarden />
+          <p className="song-garden-kicker">for you, after all this time</p>
           <h1>A song for you.</h1>
-          <span className="song-garden-handnote">press play when you’re ready ♡</span>
+          <span className="song-garden-handnote">I’m glad I saw you again ♡</span>
         </div>
         <div className="song-garden-lyrics" ref={lyricsContainerRef} aria-label="Song lyrics">
           <div className="song-garden-lyric-spacer" />

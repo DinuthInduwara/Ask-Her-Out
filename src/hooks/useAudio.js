@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { releasePreparedAudio, takePreparedAudio } from '../audioPreload';
 
 /**
  * Custom hook for managing audio playback with precise timestamp tracking
@@ -44,7 +45,7 @@ export function useAudio(audioSrc, autoPlay = false) {
 
     // Initialize audio element
     useEffect(() => {
-        const audio = new Audio(audioSrc);
+        const audio = takePreparedAudio(audioSrc);
         audio.preload = 'auto';
         audio.loop = true;
         audioRef.current = audio;
@@ -101,8 +102,9 @@ export function useAudio(audioSrc, autoPlay = false) {
         audio.addEventListener('pause', handlePause);
         audio.addEventListener('seeked', handleSeeked);
 
-        // Start loading
-        audio.load();
+        // Preloading may finish before this component mounts.
+        if (audio.readyState >= 1) handleLoadedMetadata();
+        if (audio.readyState === 0 && audio.networkState !== HTMLMediaElement.NETWORK_LOADING) audio.load();
 
         return () => {
             stopTimeLoop();
@@ -112,8 +114,7 @@ export function useAudio(audioSrc, autoPlay = false) {
             audio.removeEventListener('play', handlePlay);
             audio.removeEventListener('pause', handlePause);
             audio.removeEventListener('seeked', handleSeeked);
-            audio.pause();
-            audio.src = '';
+            releasePreparedAudio(audioSrc, audio);
         };
     }, [audioSrc, autoPlay, startTimeLoop, stopTimeLoop]);
 

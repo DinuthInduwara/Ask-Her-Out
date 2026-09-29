@@ -29,14 +29,14 @@ The opening form is a playful two-try interaction. The first submission shows "W
 src/main.jsx → App.jsx → [Login | AskOut/DirectToMusic | LoveStoryPlayer]
 ```
 
-- **Login**: Moonlit letter entrance with a playful two-try form and no real password
-- **AskOut**: Garden invitation and endlessly dodging Maybe button
+- **Login**: Daylight entrance with clouds, birds, a setting sun, and a playful two-try form
+- **AskOut**: Moonlit garden confession and endlessly dodging Maybe button
 - **DirectToMusic**: Matching letter shortcut to the music player
-- **LoveStoryPlayer**: Record-inspired synced lyrics player
+- **LoveStoryPlayer**: Moon-as-record synced lyrics player with flowers
 
 ### Key Constraints
 
-1. **MoonGarden / PetalWeather** (`src/components/`): Decorative SVG and CSS scene shared by the invitation and opening pages. Keep it non-interactive and respect reduced-motion preferences.
+1. **DaySky / MoonGarden / PetalWeather** (`src/components/`): Decorative scenes and petals. Keep them non-interactive and respect reduced-motion preferences.
 
 2. **Assets**: All images exported from `src/constants/assets.js`. The music file is imported directly in `LoveStoryPlayer.jsx`.
 
@@ -71,13 +71,14 @@ src/
 ├── index.css              # Global styles + custom CSS
 ├── components/
 │   ├── MoonGarden.jsx       # Shared moon, flowers, and swallows
+│   ├── DaySky.jsx           # Clouds, birds, and setting sun
 │   ├── PetalWeather.jsx     # Drifting petals
 │   ├── FloatingBackground.jsx  # Legacy, not mounted
 │   └── MusicPlayer.jsx      # Legacy, not mounted
 ├── constants/
 │   └── assets.js          # Image exports
 └── hooks/
-    └── useAssetPreloader.js   # Image preloading
+    └── useAudio.js          # Synced audio playback
 ```
 
 ## Deployment Notes

@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Login } from "./Login";
 import { DirectToMusic } from "./DirectToMusic";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { preloadAudio } from "./audioPreload";
+import romanticMusic from "./assets/music/romantic.mp3";
 
 function App() {
 	const [isYes, setYes] = useState(window.location.pathname === "/music");
@@ -14,6 +16,21 @@ function App() {
 	const reduceMotion = useReducedMotion();
 	const canAccessCurrentPage = authenticated || currentPath === "/direct-to-music" || (directAccess && isYes);
 	const showAskOut = canAccessCurrentPage && !isYes && currentPath !== "/direct-to-music";
+
+	useEffect(() => {
+		if (isYes) return undefined;
+		let idleId;
+		let fallbackId;
+		if ("requestIdleCallback" in window) {
+			idleId = window.requestIdleCallback(() => preloadAudio(romanticMusic), { timeout: 1800 });
+		} else {
+			fallbackId = window.setTimeout(() => preloadAudio(romanticMusic), 800);
+		}
+		return () => {
+			if (idleId !== undefined) window.cancelIdleCallback(idleId);
+			window.clearTimeout(fallbackId);
+		};
+	}, [isYes]);
 
 	useEffect(() => {
 		const handlePopState = () => {
@@ -39,10 +56,10 @@ function App() {
 				window.history.pushState({}, "", "/music");
 				setCurrentPath("/music");
 			}
-		}, reduceMotion ? 0 : 720);
+		}, reduceMotion ? 0 : 900);
 		const finishTimer = window.setTimeout(() => {
 			setIsTransitioning(false);
-		}, reduceMotion ? 0 : 1550);
+		}, reduceMotion ? 0 : 1680);
 
 		return () => {
 			window.clearTimeout(navigateTimer);
@@ -66,8 +83,9 @@ function App() {
 
 			<AnimatePresence>
 				{isTransitioning && !reduceMotion && (
-					<motion.div className="reunion-curtain" aria-hidden="true" initial={{ clipPath: "inset(0 100% 0 0)" }} animate={{ clipPath: "inset(0 0% 0 0)" }} exit={{ clipPath: "inset(0 0 0 100%)" }} transition={{ duration: .72, ease: [0.76, 0, 0.24, 1] }}>
-						<div className="reunion-curtain-copy"><span>one more thing...</span><h2>A song for you.</h2></div>
+					<motion.div className="song-bloom-transition" aria-hidden="true" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: .4 }}>
+						<div className="song-bloom-disc"><span /><span /><span /><span /><span /><span /><i>♪</i></div>
+						<p>let the music speak...</p>
 					</motion.div>
 				)}
 			</AnimatePresence>

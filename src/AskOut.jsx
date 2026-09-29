@@ -12,7 +12,7 @@ export function AskOut({ setYes }) {
   const name = import.meta.env.VITE_NAME?.trim() || "you";
 
   const handleYes = () => {
-    sendMessageTelegram("She said yes to a date.");
+    sendMessageTelegram("She said she has had feelings for me.");
     setYes();
   };
 
@@ -47,8 +47,9 @@ export function AskOut({ setYes }) {
           <motion.div className="love-letter-hero-copy" initial={reduceMotion ? false : { opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduceMotion ? 0 : .85, delay: reduceMotion ? 0 : .2 }}>
             <p className="love-letter-overline">after thirteen years</p>
             <h1>Somehow, <em>here you are</em> again.</h1>
-            <p className="love-letter-memory">We knew each other in 4th and 5th grade.<br />Then I saw you again last week.</p>
+            <span className="love-letter-memory">4th &amp; 5th grade · then last week</span>
             <span className="love-letter-script">I’ve liked you for a long time ♡</span>
+            <span className="love-letter-eyes">Your eyes are the most beautiful I’ve ever seen.</span>
           </motion.div>
           <div className="love-letter-scroll" aria-hidden="true"><span />a little further</div>
         </section>
@@ -56,9 +57,9 @@ export function AskOut({ setYes }) {
         <motion.section className="love-letter-note" aria-labelledby="reunion-question" initial={reduceMotion ? false : { opacity: 0, y: 30, rotate: -2 }} whileInView={{ opacity: 1, y: 0, rotate: -1 }} viewport={{ once: true, amount: .25 }} transition={{ duration: reduceMotion ? 0 : .8, ease: [0.22, 1, 0.36, 1] }}>
           <span className="love-letter-seal" aria-hidden="true">♡</span>
           <p className="love-letter-note-kicker">so, one small question...</p>
-          <h2 id="reunion-question">Would you go on a date with me?</h2>
+          <h2 id="reunion-question">Have you ever had feelings for me?</h2>
           <div className="reunion-actions">
-            <button type="button" className="reunion-yes" onClick={handleYes}>Yes, I’d like that <span aria-hidden="true">↗</span></button>
+            <button type="button" className="reunion-yes" onClick={handleYes}>Yes, I have <span aria-hidden="true">♡</span></button>
             <div className="reunion-maybe-zone">
               <button
                 type="button"
